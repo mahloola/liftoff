@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node --version)",
+      "PowerShell(npm --version)",
+      "PowerShell(npx --version)",
+      "PowerShell(gh --version)",
+      "PowerShell(gh auth status)",
+      "PowerShell($env:CI = \"true\"; npx create-expo-app@latest . --template blank-typescript 2>&1)",
+      "PowerShell(npx create-expo-app@latest \"E:\\\\liftoff-temp\" --template blank-typescript 2>&1)",
+      "Bash(cp /e/liftoff-temp/assets/icon.png /e/LiftOff-Task/assets/icon.png)",
+      "Bash(cp /e/liftoff-temp/assets/adaptive-icon.png /e/LiftOff-Task/assets/adaptive-icon.png)",
+      "Bash(cp /e/liftoff-temp/assets/favicon.png /e/LiftOff-Task/assets/favicon.png)",
+      "Bash(cp /e/liftoff-temp/assets/splash-icon.png /e/LiftOff-Task/assets/splash-icon.png)",
+      "Bash(npm install *)",
+      "Bash(npx expo *)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('nativewind:', p.dependencies.nativewind, 'tailwindcss:', p.devDependencies?.tailwindcss || p.dependencies?.tailwindcss\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('react-native-svg:', p.dependencies['react-native-svg']\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('RTL:', p.devDependencies['@testing-library/react-native'], 'jest-native:', p.devDependencies['@testing-library/jest-native']\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/jest-expo/package.json'\\); console.log\\('jest peer:', p.peerDependencies?.jest\\); console.log\\('jest-expo version:', p.version\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/jest/package.json'\\); console.log\\('jest version:', p.version\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/jest/package.json'\\); console.log\\('jest:', p.version\\); const jep = require\\('./node_modules/jest-expo/package.json'\\); console.log\\('jest-expo:', jep.version\\)\")",
+      "Bash(rm -rf /e/liftoff-temp && echo \"Cleaned up temp project\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Stage 1: scaffold, config, navigation shell, responsive foundation *)"
+    ]
+  }
+}
