@@ -15,7 +15,6 @@ export function Skeleton({
   style,
   ...rest
 }: SkeletonProps) {
-  // eslint-disable-next-line react-hooks/refs
   const opacity = useRef(new Animated.Value(0.4)).current;
 
   useEffect(() => {

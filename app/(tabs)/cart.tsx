@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useCart } from '@/context/CartContext';
 import { CartItem } from '@/components/cart/CartItem';
 import { OrderSummary } from '@/components/cart/OrderSummary';
+import { CheckoutPanel } from '@/components/cart/CheckoutPanel';
 import { Typography } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { colors, spacing } from '@/constants/theme';
 
 export default function CartScreen() {
   const { items, increment, decrement, removeFromCart, subtotal } = useCart();
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const isEmpty = items.length === 0;
 
@@ -56,11 +58,16 @@ export default function CartScreen() {
             variant="accent"
             size="lg"
             fullWidth
-            onPress={() => {}}
+            onPress={() => setCheckoutOpen(true)}
             style={styles.checkoutBtn}
           />
         </ScrollView>
       )}
+
+      <CheckoutPanel
+        visible={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+      />
     </SafeAreaView>
   );
 }

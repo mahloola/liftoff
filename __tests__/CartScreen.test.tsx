@@ -30,8 +30,8 @@ describe('CartScreen', () => {
 
   it('shows pre-seeded cart items', () => {
     renderWithCart();
-    expect(screen.getByText('PEUGOT LR01')).toBeTruthy();
-    expect(screen.getByText('SMITH Trade')).toBeTruthy();
+    expect(screen.getAllByText('PEUGOT LR01').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('SMITH Trade').length).toBeGreaterThan(0);
   });
 
   it('shows item count', () => {

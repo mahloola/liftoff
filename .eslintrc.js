@@ -13,6 +13,8 @@ module.exports = {
     'react-hooks/immutability': 'off',
     // Resetting loading state at the top of an effect is valid for data-fetching hooks
     'react-hooks/set-state-in-effect': 'off',
+    // RN Animated.Value via useRef().current is the documented pattern — not a render-time ref read
+    'react-hooks/refs': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-explicit-any': 'warn',
   },
