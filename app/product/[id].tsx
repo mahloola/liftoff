@@ -3,6 +3,7 @@ import { View, Image, ScrollView, StyleSheet, useWindowDimensions } from 'react-
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLocalSearchParams, router } from 'expo-router';
 import { PRODUCTS } from '@/data/products';
+import { useCart } from '@/context/CartContext';
 import { BikeSpecsCard } from '@/components/product/BikeSpecsCard';
 import { Typography } from '@/components/ui/Typography';
 import { Badge } from '@/components/ui/Badge';
@@ -16,6 +17,7 @@ export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+  const { addToCart } = useCart();
 
   const product = PRODUCTS.find((p) => p.id === id);
 
@@ -96,7 +98,7 @@ export default function ProductDetailScreen() {
           size="lg"
           fullWidth
           disabled={!product.inStock}
-          onPress={() => {}}
+          onPress={() => addToCart(product)}
         />
       </View>
     </View>

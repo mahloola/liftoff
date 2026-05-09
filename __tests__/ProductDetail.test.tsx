@@ -1,11 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react-native';
 import ProductDetailScreen from '@/app/product/[id]';
+import { CartProvider } from '@/context/CartContext';
 
 const mockUseLocalSearchParams = jest.fn(() => ({ id: 'peugot-lr01' }));
 
 jest.mock('expo-router', () => ({
-  useLocalSearchParams: (...args: unknown[]) => mockUseLocalSearchParams(...args),
+  useLocalSearchParams: () => mockUseLocalSearchParams(),
   router: { back: jest.fn() },
 }));
 
@@ -27,34 +28,34 @@ jest.mock('@/hooks/useBikeSpecs', () => ({
 
 describe('ProductDetailScreen', () => {
   it('renders the product name', () => {
-    render(<ProductDetailScreen />);
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
     expect(screen.getByText('PEUGOT LR01')).toBeTruthy();
   });
 
   it('renders the brand name', () => {
-    render(<ProductDetailScreen />);
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
     expect(screen.getByText('PEUGOT')).toBeTruthy();
   });
 
   it('renders the price', () => {
-    render(<ProductDetailScreen />);
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
     expect(screen.getByText('$899')).toBeTruthy();
   });
 
   it('renders the Add to Cart button', () => {
-    render(<ProductDetailScreen />);
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
     expect(screen.getByText('Add to Cart')).toBeTruthy();
   });
 
   it('renders the BikeIndex live data section', () => {
-    render(<ProductDetailScreen />);
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
     expect(screen.getByText('Live Bike Data')).toBeTruthy();
     expect(screen.getByText('BikeIndex.org')).toBeTruthy();
   });
 
   it('renders not found for unknown id', () => {
     mockUseLocalSearchParams.mockReturnValueOnce({ id: 'does-not-exist' });
-    render(<ProductDetailScreen />);
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
     expect(screen.getByText('Product not found.')).toBeTruthy();
   });
 });
