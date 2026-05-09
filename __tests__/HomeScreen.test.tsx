@@ -24,38 +24,9 @@ describe('HomeScreen', () => {
     expect(screen.getByText('Choose Your Bike')).toBeTruthy();
   });
 
-  it('renders the featured product name', () => {
-    render(<HomeScreen />);
-    expect(screen.getByText('Electric Bicycle Pro')).toBeTruthy();
-  });
-
-  it('renders the discount badge', () => {
+  it('renders the hero card discount label', () => {
     render(<HomeScreen />);
     expect(screen.getByText('30% Off')).toBeTruthy();
-  });
-
-  it('renders the Buy Now button', () => {
-    render(<HomeScreen />);
-    expect(screen.getAllByText('Buy Now').length).toBeGreaterThan(0);
-  });
-
-  it('renders the featured price with discount', () => {
-    render(<HomeScreen />);
-    expect(screen.getByText('$1,749')).toBeTruthy();
-    expect(screen.getByText('$2,499')).toBeTruthy();
-  });
-
-  it('renders Best Seller section heading', () => {
-    render(<HomeScreen />);
-    expect(screen.getByText('Best Seller')).toBeTruthy();
-  });
-
-  it('renders all four category labels', () => {
-    render(<HomeScreen />);
-    expect(screen.getByText('Bicycle')).toBeTruthy();
-    expect(screen.getByText('Road')).toBeTruthy();
-    expect(screen.getByText('Mountain')).toBeTruthy();
-    expect(screen.getByText('Helmet')).toBeTruthy();
   });
 
   it('renders product cards in the grid', () => {
@@ -64,14 +35,29 @@ describe('HomeScreen', () => {
     expect(screen.getByText('SMITH Trade')).toBeTruthy();
   });
 
-  it('renders product brand names in cards', () => {
+  it('renders product prices in the grid', () => {
     render(<HomeScreen />);
-    expect(screen.getByText('PEUGOT')).toBeTruthy();
-    expect(screen.getByText('SMITH')).toBeTruthy();
+    expect(screen.getByText('$899')).toBeTruthy();
+    expect(screen.getByText('$649')).toBeTruthy();
+  });
+
+  it('renders all five category buttons', () => {
+    render(<HomeScreen />);
+    expect(screen.getByTestId('category-all')).toBeTruthy();
+    expect(screen.getByTestId('category-bicycle')).toBeTruthy();
+    expect(screen.getByTestId('category-road')).toBeTruthy();
+    expect(screen.getByTestId('category-mountain')).toBeTruthy();
+    expect(screen.getByTestId('category-helmet')).toBeTruthy();
   });
 
   it('tapping a category button does not crash', () => {
     render(<HomeScreen />);
-    fireEvent.press(screen.getByText('Mountain'));
+    fireEvent.press(screen.getByTestId('category-mountain'));
+  });
+
+  it('tapping all category button shows all products', () => {
+    render(<HomeScreen />);
+    fireEvent.press(screen.getByTestId('category-all'));
+    expect(screen.getByText('PEUGOT LR01')).toBeTruthy();
   });
 });

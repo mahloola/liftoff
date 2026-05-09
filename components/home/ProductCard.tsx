@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Image, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Product } from '@/types';
-import { ProductImage } from '@/components/ui/ProductImage';
 import { Typography } from '@/components/ui/Typography';
 import { PressableScale } from '@/components/ui/PressableScale';
 import { colors, spacing, borderRadius } from '@/constants/theme';
+
+const SKEW = '-5deg' as const;
+const SKEW_INV = '5deg' as const;
 
 interface ProductCardProps {
   product: Product;
@@ -16,49 +18,70 @@ export function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
   const cardWidth = (width - spacing.lg * 2 - spacing.sm) / 2;
 
-  function handlePress() {
-    router.push(`/product/${product.id}`);
-  }
-
   return (
-    <PressableScale onPress={handlePress} style={[styles.card, { width: cardWidth }]}>
-      <View style={styles.imageWrap}>
-        <ProductImage source={product.image} aspectRatio={1} width="100%" radius={borderRadius.md} />
-      </View>
-      <View style={styles.info}>
-        <Typography variant="caption" color={colors.textSecondary} numberOfLines={1}>
-          {product.brand}
-        </Typography>
-        <Typography variant="body" weight="semibold" numberOfLines={2} style={styles.name}>
-          {product.name}
-        </Typography>
-        <Typography variant="price" color={colors.textPrimary} style={styles.price}>
-          ${product.price.toLocaleString()}
-        </Typography>
+    <PressableScale onPress={() => router.push(`/product/${product.id}`)} style={{ width: cardWidth }}>
+      {/* skewed outer shell — creates parallelogram border */}
+      <View style={styles.skewOuter}>
+        <View style={styles.card}>
+          {/* de-skewed inner content */}
+          <View style={styles.skewInner}>
+            {/* image area */}
+            <View style={styles.imageArea}>
+              <Image source={product.image} style={styles.bikeImage} resizeMode="contain" />
+              <Text style={styles.heart}>♡</Text>
+            </View>
+            {/* info */}
+            <View style={styles.info}>
+              <Typography variant="body" weight="semibold" numberOfLines={1} color={colors.textPrimary}>
+                {product.name}
+              </Typography>
+              <Typography variant="caption" color={colors.textPrimary} weight="bold">
+                ${product.price.toLocaleString()}
+              </Typography>
+            </View>
+          </View>
+        </View>
       </View>
     </PressableScale>
   );
 }
 
 const styles = StyleSheet.create({
+  skewOuter: {
+    transform: [{ skewY: SKEW }],
+    marginVertical: 6,
+  },
   card: {
-    backgroundColor: colors.surface,
-    borderRadius: borderRadius.lg,
+    backgroundColor: 'rgba(20, 27, 46, 0.78)',
+    borderWidth: 0.6,
+    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderRadius: borderRadius.md,
     overflow: 'hidden',
   },
-  imageWrap: {
-    padding: spacing.sm,
-    backgroundColor: colors.surfaceElevated,
+  skewInner: {
+    transform: [{ skewY: SKEW_INV }],
   },
-  info: {
+  imageArea: {
+    aspectRatio: 1,
     padding: spacing.sm,
-    paddingTop: spacing.xs,
-    gap: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  name: {
+  bikeImage: {
+    width: '90%',
+    height: '90%',
+  },
+  heart: {
+    position: 'absolute',
+    top: spacing.xs,
+    right: spacing.sm,
+    color: 'rgba(255, 255, 255, 0.75)',
+    fontSize: 16,
     lineHeight: 20,
   },
-  price: {
-    marginTop: spacing.xs,
+  info: {
+    paddingHorizontal: spacing.sm,
+    paddingBottom: spacing.sm,
+    gap: 2,
   },
 });
