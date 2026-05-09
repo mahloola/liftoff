@@ -12,22 +12,28 @@ import HeroContainer from '@/assets/svg/mikkel-bech-yjAFnkLtKY0-unsplash-removeb
 // The visible container shape spans roughly y=80 to y=297 on the left edge.
 const SVG_W = 390;
 const SVG_H = 398;
-const CONTAINER_TOP_Y    = 82;   // top of glassmorphic rect in SVG coords
-const CONTAINER_BOTTOM_Y = 290;  // approximate bottom of visible area
+
+// Glass container area inside SVG
+const GLASS_TOP = 82;
+const GLASS_HEIGHT = 208;
 
 interface HeroCardProps {
   product: Product;
 }
 
 export function HeroCard({ product }: HeroCardProps) {
-  const { width } = useWindowDimensions();
-  const router    = useRouter();
+  const { width: screenWidth } = useWindowDimensions();
+  const router = useRouter();
 
-  const scale   = width / SVG_W;
-  const svgH    = SVG_H * scale;
-  const imgTop  = CONTAINER_TOP_Y * scale;
-  const imgH    = (CONTAINER_BOTTOM_Y - CONTAINER_TOP_Y) * scale;
-  const imgSide = 24 * scale;
+  // Prevent giant scaling on larger devices
+  const cardWidth = Math.min(screenWidth - 32, 430);
+
+  const scale = cardWidth / SVG_W;
+  const cardHeight = SVG_H * scale;
+
+  // Scale the glass area
+  const glassTop = GLASS_TOP * scale;
+  const glassHeight = GLASS_HEIGHT * scale;
 
   return (
     <PressableScale
@@ -35,30 +41,31 @@ export function HeroCard({ product }: HeroCardProps) {
       onPress={() => router.push(`/product/${product.id}`)}
       style={styles.wrapper}
     >
-      <View style={[styles.svgWrapper, { height: svgH }]}>
-        <HeroContainer width={width} height={svgH} preserveAspectRatio="none" />
+      <View
+        style={[
+          styles.cardContainer,
+          {
+            width: cardWidth,
+            height: cardHeight,
+          },
+        ]}
+      >
+        {/* SVG Background */}
+        <HeroContainer width={cardWidth} height={cardHeight} preserveAspectRatio="none" />
 
-        {/* Bike image centered within the glassmorphic container */}
+        {/* Product Image */}
         <Image
           source={product.image}
+          resizeMode="contain"
           style={[
             styles.bikeImage,
-            { top: imgTop, left: imgSide, right: imgSide, height: imgH },
+            {
+              top: glassTop + glassHeight * 0.05,
+              width: cardWidth * 0.82,
+              height: glassHeight * 0.9,
+            },
           ]}
-          resizeMode="contain"
         />
-
-        {/* "30% Off" label bottom-left of container */}
-        {product.discountPercent !== undefined && (
-          <Text
-            style={[
-              styles.discountText,
-              { bottom: (SVG_H - CONTAINER_BOTTOM_Y) * scale + spacing.md },
-            ]}
-          >
-            {product.discountPercent}% Off
-          </Text>
-        )}
       </View>
     </PressableScale>
   );
@@ -66,20 +73,31 @@ export function HeroCard({ product }: HeroCardProps) {
 
 const styles = StyleSheet.create({
   wrapper: {
-    marginHorizontal: spacing.lg,
+    alignItems: 'center',
+    width: '100%',
+  },
+
+  cardContainer: {
+    position: 'relative',
+    overflow: 'hidden',
+  },
+
+  bikeImage: {
+    position: 'absolute',
+    alignSelf: 'center',
   },
   svgWrapper: {
     width: '100%',
     position: 'relative',
   },
-  bikeImage: {
-    position: 'absolute',
-  },
+  // bikeImage: {
+  //   position: 'absolute',
+  // },
   discountText: {
     position: 'absolute',
-    left: spacing.xl,
+    left: spacing.xxxl,
     color: colors.textSecondary,
-    fontSize: 14,
+    fontSize: 30,
     fontFamily: 'Poppins_500Medium',
   },
 });

@@ -20,21 +20,17 @@ interface FadeInCardProps {
 }
 
 function FadeInCard({ delay, children }: FadeInCardProps) {
-  const opacity   = useRef(new Animated.Value(0)).current;
+  const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(12)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(opacity,    { toValue: 1, duration: 280, delay, useNativeDriver: true }),
+      Animated.timing(opacity, { toValue: 1, duration: 280, delay, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 0, duration: 280, delay, useNativeDriver: true }),
     ]).start();
   }, [opacity, translateY, delay]);
 
-  return (
-    <Animated.View style={{ opacity, transform: [{ translateY }] }}>
-      {children}
-    </Animated.View>
-  );
+  return <Animated.View style={{ opacity, transform: [{ translateY }] }}>{children}</Animated.View>;
 }
 
 export default function HomeScreen() {
@@ -43,13 +39,16 @@ export default function HomeScreen() {
 
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(
-      (p) => p.id !== FEATURED_PRODUCT.id && (selectedCategory === 'all' || p.category === selectedCategory)
+      (p) =>
+        p.id !== FEATURED_PRODUCT.id &&
+        (selectedCategory === 'all' || p.category === selectedCategory)
     );
   }, [selectedCategory]);
 
-  const displayProducts: Product[] = filteredProducts.length > 0
-    ? filteredProducts
-    : PRODUCTS.filter((p) => p.id !== FEATURED_PRODUCT.id);
+  const displayProducts: Product[] =
+    filteredProducts.length > 0
+      ? filteredProducts
+      : PRODUCTS.filter((p) => p.id !== FEATURED_PRODUCT.id);
 
   // Scale SVG polygon to screen dimensions
   const svgW = width;
@@ -59,12 +58,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Background polygon SVG — lowest layer */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <SvgIndex
-          width={svgW}
-          height={svgH}
-          preserveAspectRatio="none"
-          style={{ position: 'absolute', top: 0, left: 0 }}
-        />
+        <SvgIndex width={svgW} height={svgH} preserveAspectRatio="none" style={styles.indexSvg} />
       </View>
 
       <ScrollView
@@ -84,7 +78,7 @@ export default function HomeScreen() {
               colors={[colors.gradientStart, colors.gradientEnd]}
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 0 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.pill }]}
+              style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
             />
             <View style={styles.searchBtnIcon}>
               <SearchIcon width={22} height={22} color={colors.textPrimary} />
@@ -131,7 +125,7 @@ const styles = StyleSheet.create({
   searchBtn: {
     width: 40,
     height: 40,
-    borderRadius: borderRadius.pill,
+    borderRadius: 10,
     backgroundColor: colors.gradientEnd,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.7)',
@@ -139,7 +133,10 @@ const styles = StyleSheet.create({
   },
   searchBtnIcon: {
     position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -151,5 +148,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingHorizontal: spacing.lg,
     gap: spacing.sm,
+  },
+  indexSvg: {
+    position: 'absolute',
+    top: 200,
+    left: 0,
   },
 });

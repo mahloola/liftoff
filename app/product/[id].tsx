@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import {
-  View, Image, ScrollView, StyleSheet, Text,
-  TouchableOpacity, useWindowDimensions,
+  View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,10 +17,7 @@ import { BikeSpecsCard } from '@/components/product/BikeSpecsCard';
 import { Typography } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { PressableScale } from '@/components/ui/PressableScale';
-import {
-  colors, spacing, borderRadius,
-  gradientButtonShadow,
-} from '@/constants/theme';
+import { colors, spacing, borderRadius, gradientButtonShadow } from '@/constants/theme';
 
 import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
 import SvgProduct from '@/assets/svg/svg-product.svg';
@@ -24,10 +26,10 @@ import SvgProductBottom from '@/assets/svg/svg-product-bottom.svg';
 type Tab = 'description' | 'specification';
 
 export default function ProductDetailScreen() {
-  const { id }         = useLocalSearchParams<{ id: string }>();
-  const { width }      = useWindowDimensions();
-  const insets         = useSafeAreaInsets();
-  const { addToCart }  = useCart();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const { addToCart } = useCart();
   const [activeTab, setActiveTab] = useState<Tab>('description');
 
   const product = PRODUCTS.find((p) => p.id === id);
@@ -35,24 +37,32 @@ export default function ProductDetailScreen() {
   if (!product) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
-        <PressableScale onPress={() => router.back()} style={[styles.backBtn, { top: insets.top + spacing.sm }]}>
+        <PressableScale
+          onPress={() => router.back()}
+          style={[styles.backBtn, { top: insets.top + spacing.sm }]}
+        >
           <LinearGradient
             colors={[colors.gradientStart, colors.gradientEnd]}
-            start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }}
-            style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.pill }]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
           />
-          <View style={styles.backBtnIcon}><ChevronLeft width={20} height={20} /></View>
+          <View style={styles.backBtnIcon}>
+            <ChevronLeft width={20} height={20} />
+          </View>
         </PressableScale>
         <View style={styles.notFound}>
-          <Typography variant="body" color={colors.textSecondary}>Product not found.</Typography>
+          <Typography variant="body" color={colors.textSecondary}>
+            Product not found.
+          </Typography>
         </View>
       </View>
     );
   }
 
-  const svgBgH    = width * (641 / 382);
-  const imageH    = Math.round(width * 0.6);
-  const bottomH   = 104 + insets.bottom;
+  const svgBgH = width * (641 / 382);
+  const imageH = Math.round(width * 0.6);
+  const bottomH = 104 + insets.bottom;
 
   return (
     <View style={styles.container}>
@@ -73,10 +83,13 @@ export default function ProductDetailScreen() {
       >
         <LinearGradient
           colors={[colors.gradientStart, colors.gradientEnd]}
-          start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.pill }]}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
         />
-        <View style={styles.backBtnIcon}><ChevronLeft width={20} height={20} /></View>
+        <View style={styles.backBtnIcon}>
+          <ChevronLeft width={20} height={20} />
+        </View>
       </PressableScale>
 
       <ScrollView
@@ -93,11 +106,7 @@ export default function ProductDetailScreen() {
 
         {/* Bike image */}
         <View style={[styles.imageWrap, { height: imageH }]}>
-          <Image
-            source={product.image}
-            style={styles.bikeImage}
-            resizeMode="contain"
-          />
+          <Image source={product.image} style={styles.bikeImage} resizeMode="contain" />
         </View>
 
         {/* Pagination dots */}
@@ -113,7 +122,7 @@ export default function ProductDetailScreen() {
           <View style={styles.tabRow}>
             {(['description', 'specification'] as Tab[]).map((tab) => {
               const isActive = activeTab === tab;
-              const label    = tab === 'description' ? 'Description' : 'Specification';
+              const label = tab === 'description' ? 'Description' : 'Specification';
               return (
                 <TouchableOpacity
                   key={tab}
@@ -143,11 +152,7 @@ export default function ProductDetailScreen() {
                 <Typography variant="body" weight="bold" color={colors.textPrimary}>
                   {product.brand} — {product.model}
                 </Typography>
-                <Typography
-                  variant="body"
-                  color={colors.textSecondary}
-                  style={styles.descText}
-                >
+                <Typography variant="body" color={colors.textSecondary} style={styles.descText}>
                   {product.description}
                 </Typography>
               </View>
@@ -168,7 +173,9 @@ export default function ProductDetailScreen() {
         />
         <View style={[styles.bottomContent, { paddingBottom: insets.bottom }]}>
           <View style={styles.priceBlock}>
-            <Typography variant="caption" color={colors.textSecondary}>Price</Typography>
+            <Typography variant="caption" color={colors.textSecondary}>
+              Price
+            </Typography>
             <Text style={styles.priceText}>${product.price.toLocaleString()}</Text>
           </View>
           <View style={styles.cartBtnWrap}>
@@ -200,7 +207,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     width: 40,
     height: 40,
-    borderRadius: borderRadius.pill,
+    borderRadius: 10,
     backgroundColor: colors.gradientEnd,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.7)',
@@ -208,7 +215,10 @@ const styles = StyleSheet.create({
   },
   backBtnIcon: {
     position: 'absolute',
-    top: 0, left: 0, right: 0, bottom: 0,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },
