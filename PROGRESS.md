@@ -363,7 +363,21 @@ Rive is available as a dependency but **will not be used unless** a specific ani
 **Tests:** 8 passing — `useScale` math contracts (6) + HomeScreen render (2).
 
 ### Stage 2 — Theme + Shared UI Atoms
-- Status: Not started
+- **Status: COMPLETE — awaiting approval to proceed to Stage 3**
+- Commit: `7522115` — pushed to https://github.com/mahloola/liftoff
+
+**What was completed:**
+- `tailwind.config.js` extended with all brand colors, font sizes, spacing, border radii —
+  NativeWind className utilities now match `constants/theme.ts` tokens exactly
+- `Button` — accent/outline/ghost variants, sm/md/lg sizes, loading spinner, disabled state, fullWidth
+- `Divider` — hairline separator using theme border color
+- `ProductImage` — local PNG wrapper with skeleton loading, contain resize mode, configurable aspect ratio
+- `components/ui/index.ts` — barrel export so imports are `from '@/components/ui'`
+- `__mocks__/react-native-reanimated.js` — full v4 API stub that avoids native worklets init
+- `__mocks__/react-native-worklets.js` — stub for Reanimated v4's peer dependency
+- `jest.config.js` moduleNameMapper wires both mocks globally (no per-test mock needed)
+- 14 tests passing, TypeScript clean
+- Housekeeping: `android/` prebuild folder added to `.gitignore` and untracked (managed workflow)
 
 ### Stage 3 — Home Screen
 - Status: Not started

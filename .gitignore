@@ -20,3 +20,7 @@ coverage/
 
 # Expo
 expo-env.d.ts
+
+# Native prebuild folders (managed workflow — generated on demand by expo prebuild / EAS)
+android/
+ios/

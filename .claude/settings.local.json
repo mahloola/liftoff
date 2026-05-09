@@ -27,7 +27,19 @@
       "Bash(git add *)",
       "Bash(git commit -m 'Stage 1: scaffold, config, navigation shell, responsive foundation *)",
       "Bash(gh repo *)",
-      "Bash(git commit -m 'Stage 2: theme system, UI atom library, Reanimated test mocks *)"
+      "Bash(git commit -m 'Stage 2: theme system, UI atom library, Reanimated test mocks *)",
+      "Bash(git rm *)",
+      "Bash(node -e \"const p = require\\('./node_modules/react-native-reanimated/package.json'\\); console.log\\('peerDeps:', JSON.stringify\\(p.peerDependencies, null, 2\\)\\); console.log\\('deps:', JSON.stringify\\(p.dependencies, null, 2\\)\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/react-native-worklets/package.json'\\); console.log\\('version:', p.version\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/expo/package.json'\\); const rn = p.dependencies?.['react-native-worklets'] || p.peerDependencies?.['react-native-worklets']; console.log\\('expo worklets dep:', rn\\)\")",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\); const j=JSON.parse\\(d\\); console.log\\('worklets:', j['react-native-worklets']\\); console.log\\('reanimated:', j['react-native-reanimated']\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(xargs grep -l \"react-native-worklets\")",
+      "Bash(xargs grep -l \"worklets\")",
+      "Bash(npm uninstall *)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('reanimated:', p.dependencies['react-native-reanimated']\\); console.log\\('worklets:', p.dependencies['react-native-worklets']\\)\")",
+      "Bash(git commit -m 'Fix: downgrade Reanimated v4→v3, resolve ESLint v9 conflict, clean lint *)",
+      "Bash(git push *)"
     ]
   }
 }
