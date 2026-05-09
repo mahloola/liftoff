@@ -39,7 +39,15 @@
       "Bash(npm uninstall *)",
       "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\('reanimated:', p.dependencies['react-native-reanimated']\\); console.log\\('worklets:', p.dependencies['react-native-worklets']\\)\")",
       "Bash(git commit -m 'Fix: downgrade Reanimated v4→v3, resolve ESLint v9 conflict, clean lint *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(node -e \"require\\('@/constants/theme'\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(p.dependencies['expo-linear-gradient']\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(JSON.stringify\\({linearGradient: p.dependencies['expo-linear-gradient']}\\)\\)\")",
+      "Bash(node -e \"const p = require\\('./node_modules/expo-linear-gradient/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(npx jest *)",
+      "Bash(npx eslint *)",
+      "Bash(git commit -m ' *)",
+      "Bash(node -e \"const p = require\\('./node_modules/react-native-reanimated/package.json'\\); console.log\\(p.version\\)\")"
     ]
   }
 }

@@ -1,105 +1,186 @@
-import React from 'react';
-import { View, Image, ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import {
+  View, Image, ScrollView, StyleSheet, Text,
+  TouchableOpacity, useWindowDimensions,
+} from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, router } from 'expo-router';
 import { PRODUCTS } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { BikeSpecsCard } from '@/components/product/BikeSpecsCard';
 import { Typography } from '@/components/ui/Typography';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PressableScale } from '@/components/ui/PressableScale';
-import { colors, spacing, borderRadius } from '@/constants/theme';
+import {
+  colors, spacing, borderRadius,
+  gradientButtonShadow,
+} from '@/constants/theme';
 
 import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
+import SvgProduct from '@/assets/svg/svg-product.svg';
+import SvgProductBottom from '@/assets/svg/svg-product-bottom.svg';
+
+type Tab = 'description' | 'specification';
 
 export default function ProductDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const { addToCart } = useCart();
+  const { id }         = useLocalSearchParams<{ id: string }>();
+  const { width }      = useWindowDimensions();
+  const insets         = useSafeAreaInsets();
+  const { addToCart }  = useCart();
+  const [activeTab, setActiveTab] = useState<Tab>('description');
 
   const product = PRODUCTS.find((p) => p.id === id);
 
   if (!product) {
     return (
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <PressableScale
-          onPress={() => router.back()}
-          style={[styles.backBtn, { top: insets.top + spacing.sm }]}
-        >
-          <ChevronLeft width={20} height={20} />
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <PressableScale onPress={() => router.back()} style={[styles.backBtn, { top: insets.top + spacing.sm }]}>
+          <LinearGradient
+            colors={[colors.gradientStart, colors.gradientEnd]}
+            start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.pill }]}
+          />
+          <View style={styles.backBtnIcon}><ChevronLeft width={20} height={20} /></View>
         </PressableScale>
         <View style={styles.notFound}>
-          <Typography variant="body" color={colors.textSecondary}>
-            Product not found.
-          </Typography>
+          <Typography variant="body" color={colors.textSecondary}>Product not found.</Typography>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 
-  const imageHeight = Math.round(width * 0.7);
+  const svgBgH    = width * (641 / 382);
+  const imageH    = Math.round(width * 0.6);
+  const bottomH   = 104 + insets.bottom;
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={{ paddingBottom: 100 }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={[styles.imageContainer, { height: imageHeight }]}>
-          <Image source={product.image} style={styles.image} resizeMode="contain" />
-        </View>
+      {/* Background polygon */}
+      <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <SvgProduct
+          width={width}
+          height={svgBgH}
+          preserveAspectRatio="none"
+          style={{ position: 'absolute', top: 0, left: 0 }}
+        />
+      </View>
 
-        <View style={styles.body}>
-          <View style={styles.titleRow}>
-            <View style={styles.titleBlock}>
-              <Typography variant="caption" color={colors.textSecondary}>
-                {product.brand}
-              </Typography>
-              <Typography variant="heading" weight="bold">
-                {product.name}
-              </Typography>
-            </View>
-            {product.discountPercent !== undefined && (
-              <Badge label={`${product.discountPercent}% Off`} color={colors.accent} />
-            )}
-          </View>
-
-          <View style={styles.priceRow}>
-            <Typography variant="price">${product.price.toLocaleString()}</Typography>
-            {product.originalPrice !== undefined && (
-              <Typography variant="body" color={colors.textSecondary} style={styles.originalPrice}>
-                ${product.originalPrice.toLocaleString()}
-              </Typography>
-            )}
-          </View>
-
-          <Typography variant="body" color={colors.textSecondary} style={styles.description}>
-            {product.description}
-          </Typography>
-
-          <BikeSpecsCard brand={product.brand} />
-        </View>
-      </ScrollView>
-
+      {/* Back button */}
       <PressableScale
         onPress={() => router.back()}
         style={[styles.backBtn, { top: insets.top + spacing.sm }]}
       >
-        <ChevronLeft width={20} height={20} />
+        <LinearGradient
+          colors={[colors.gradientStart, colors.gradientEnd]}
+          start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.pill }]}
+        />
+        <View style={styles.backBtnIcon}><ChevronLeft width={20} height={20} /></View>
       </PressableScale>
 
-      <View style={[styles.footer, { paddingBottom: insets.bottom + spacing.md }]}>
-        <Button
-          label={product.inStock ? 'Add to Cart' : 'Out of Stock'}
-          variant="accent"
-          size="lg"
-          fullWidth
-          disabled={!product.inStock}
-          onPress={() => addToCart(product)}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={{ paddingBottom: bottomH + spacing.lg }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Product title */}
+        <View style={[styles.titleArea, { paddingTop: insets.top + spacing.xl + 40 }]}>
+          <Typography variant="heading" weight="bold" style={styles.titleText}>
+            {product.brand} — {product.model}
+          </Typography>
+        </View>
+
+        {/* Bike image */}
+        <View style={[styles.imageWrap, { height: imageH }]}>
+          <Image
+            source={product.image}
+            style={styles.bikeImage}
+            resizeMode="contain"
+          />
+        </View>
+
+        {/* Pagination dots */}
+        <View style={styles.dots}>
+          <View style={[styles.dot, styles.dotActive]} />
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+        </View>
+
+        {/* Description / Specification tabs + content */}
+        <View style={styles.tabCard}>
+          {/* Tab row */}
+          <View style={styles.tabRow}>
+            {(['description', 'specification'] as Tab[]).map((tab) => {
+              const isActive = activeTab === tab;
+              const label    = tab === 'description' ? 'Description' : 'Specification';
+              return (
+                <TouchableOpacity
+                  key={tab}
+                  onPress={() => setActiveTab(tab)}
+                  style={styles.tabBtn}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={[
+                      styles.tabLabel,
+                      { color: isActive ? colors.tabTextStart : colors.textSecondary },
+                      isActive && styles.tabLabelActive,
+                    ]}
+                  >
+                    {label}
+                  </Text>
+                  {isActive && <View style={styles.tabUnderline} />}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Tab content */}
+          <View style={styles.tabContent}>
+            {activeTab === 'description' ? (
+              <View style={styles.descContent}>
+                <Typography variant="body" weight="bold" color={colors.textPrimary}>
+                  {product.brand} — {product.model}
+                </Typography>
+                <Typography
+                  variant="body"
+                  color={colors.textSecondary}
+                  style={styles.descText}
+                >
+                  {product.description}
+                </Typography>
+              </View>
+            ) : (
+              <BikeSpecsCard brand={product.brand} />
+            )}
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Bottom container: price + Add to Cart */}
+      <View style={[styles.bottomOuter, { height: bottomH }]}>
+        <SvgProductBottom
+          width={width}
+          height={154}
+          preserveAspectRatio="none"
+          style={[StyleSheet.absoluteFill, { bottom: insets.bottom - 50 }]}
         />
+        <View style={[styles.bottomContent, { paddingBottom: insets.bottom }]}>
+          <View style={styles.priceBlock}>
+            <Typography variant="caption" color={colors.textSecondary}>Price</Typography>
+            <Text style={styles.priceText}>${product.price.toLocaleString()}</Text>
+          </View>
+          <View style={styles.cartBtnWrap}>
+            <Button
+              label={product.inStock ? 'Add to Cart' : 'Out of Stock'}
+              variant="accent"
+              size="md"
+              disabled={!product.inStock}
+              onPress={() => addToCart(product)}
+            />
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -113,62 +194,131 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
-  imageContainer: {
-    backgroundColor: colors.surfaceElevated,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  image: {
-    width: '80%',
-    height: '80%',
-  },
-  body: {
-    padding: spacing.lg,
-    gap: spacing.lg,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  titleBlock: {
-    flex: 1,
-    gap: 2,
-    marginRight: spacing.sm,
-  },
-  priceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  originalPrice: {
-    textDecorationLine: 'line-through',
-  },
-  description: {
-    lineHeight: 22,
-  },
   backBtn: {
     position: 'absolute',
     left: spacing.lg,
-    width: 36,
-    height: 36,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.surface,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    borderRadius: borderRadius.pill,
+    backgroundColor: colors.gradientEnd,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.7)',
+    ...gradientButtonShadow,
+  },
+  backBtnIcon: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.md,
-    backgroundColor: colors.background,
   },
   notFound: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleArea: {
+    paddingHorizontal: spacing.lg,
+    alignItems: 'center',
+  },
+  titleText: {
+    textAlign: 'center',
+  },
+  imageWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: spacing.md,
+  },
+  bikeImage: {
+    width: '80%',
+    height: '100%',
+  },
+  dots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: spacing.md,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+  },
+  dotActive: {
+    width: 18,
+    borderRadius: 3,
+    backgroundColor: colors.gradientStart,
+  },
+  tabCard: {
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.lg,
+    backgroundColor: colors.panelStart,
+    borderRadius: borderRadius.xl,
+    overflow: 'hidden',
+    borderWidth: 0.5,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
+  tabRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 0.5,
+    borderBottomColor: 'rgba(255,255,255,0.08)',
+  },
+  tabBtn: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+    gap: 2,
+  },
+  tabLabel: {
+    fontSize: 14,
+    fontFamily: 'Poppins_600SemiBold',
+  },
+  tabLabelActive: {
+    color: colors.tabTextStart,
+  },
+  tabUnderline: {
+    height: 2,
+    width: 40,
+    borderRadius: 1,
+    backgroundColor: colors.tabTextStart,
+  },
+  tabContent: {
+    padding: spacing.lg,
+  },
+  descContent: {
+    gap: spacing.sm,
+  },
+  descText: {
+    lineHeight: 22,
+  },
+  bottomOuter: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    overflow: 'visible',
+  },
+  bottomContent: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 104,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    gap: spacing.lg,
+  },
+  priceBlock: {
+    gap: 2,
+  },
+  priceText: {
+    fontSize: 22,
+    fontFamily: 'Poppins_700Bold',
+    color: colors.priceBlue,
+  },
+  cartBtnWrap: {
+    flex: 1,
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react-native';
+import { render, screen, fireEvent } from '@testing-library/react-native';
 import ProductDetailScreen from '@/app/product/[id]';
 import { CartProvider } from '@/context/CartContext';
 
@@ -27,14 +27,10 @@ jest.mock('@/hooks/useBikeSpecs', () => ({
 }));
 
 describe('ProductDetailScreen', () => {
-  it('renders the product name', () => {
+  it('renders the product title (brand — model)', () => {
     render(<CartProvider><ProductDetailScreen /></CartProvider>);
-    expect(screen.getByText('PEUGOT LR01')).toBeTruthy();
-  });
-
-  it('renders the brand name', () => {
-    render(<CartProvider><ProductDetailScreen /></CartProvider>);
-    expect(screen.getByText('PEUGOT')).toBeTruthy();
+    // Title shows as "PEUGOT — LR01" (multiple times: header + description tab)
+    expect(screen.getAllByText('PEUGOT — LR01').length).toBeGreaterThan(0);
   });
 
   it('renders the price', () => {
@@ -47,8 +43,15 @@ describe('ProductDetailScreen', () => {
     expect(screen.getByText('Add to Cart')).toBeTruthy();
   });
 
-  it('renders the BikeIndex live data section', () => {
+  it('shows Description tab by default', () => {
     render(<CartProvider><ProductDetailScreen /></CartProvider>);
+    expect(screen.getByText('Description')).toBeTruthy();
+    expect(screen.getByText('Specification')).toBeTruthy();
+  });
+
+  it('switches to Specification tab and shows live data section', () => {
+    render(<CartProvider><ProductDetailScreen /></CartProvider>);
+    fireEvent.press(screen.getByText('Specification'));
     expect(screen.getByText('Live Bike Data')).toBeTruthy();
     expect(screen.getByText('BikeIndex.org')).toBeTruthy();
   });

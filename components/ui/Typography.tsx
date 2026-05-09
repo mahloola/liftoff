@@ -1,9 +1,9 @@
 import React from 'react';
 import { Text, TextProps, StyleSheet } from 'react-native';
-import { colors, fontSizes, fontWeights } from '@/constants/theme';
+import { colors, fontSizes, fontFamilies } from '@/constants/theme';
 
 type Variant = 'display' | 'heading' | 'subheading' | 'body' | 'caption' | 'price' | 'button';
-type Weight = keyof typeof fontWeights;
+type Weight = keyof typeof fontFamilies;
 
 interface TypographyProps extends TextProps {
   variant?: Variant;
@@ -20,14 +20,14 @@ export function Typography({
   children,
   ...rest
 }: TypographyProps) {
-  const defaultWeight = getDefaultWeight(variant);
+  const resolvedWeight = weight ?? getDefaultWeight(variant);
 
   return (
     <Text
       style={[
         styles.base,
         { fontSize: fontSizes[variant], color },
-        { fontWeight: fontWeights[weight ?? defaultWeight] },
+        { fontFamily: fontFamilies[resolvedWeight] },
         style,
       ]}
       {...rest}

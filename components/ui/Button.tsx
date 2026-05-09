@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { PressableScale } from './PressableScale';
 import { Typography } from './Typography';
 import { colors, borderRadius, shadows } from '@/constants/theme';
@@ -31,6 +32,39 @@ export function Button({
   style,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const h = HEIGHT[size];
+
+  if (variant === 'accent') {
+    return (
+      <PressableScale
+        onPress={onPress}
+        disabled={isDisabled}
+        scaleTo={0.97}
+        style={[
+          { height: h, borderRadius: borderRadius.md, backgroundColor: colors.gradientEnd },
+          fullWidth && styles.fullWidth,
+          isDisabled && styles.disabled,
+          shadows.button,
+          style,
+        ]}
+      >
+        <LinearGradient
+          colors={[colors.gradientStart, colors.gradientEnd]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.md }]}
+        />
+        <Typography variant="button" color={colors.textPrimary}>{loading ? '' : label}</Typography>
+        {loading && (
+          <ActivityIndicator
+            color={colors.textPrimary}
+            size="small"
+            style={StyleSheet.absoluteFill}
+          />
+        )}
+      </PressableScale>
+    );
+  }
 
   return (
     <PressableScale
@@ -40,7 +74,7 @@ export function Button({
       style={[
         styles.base,
         styles[variant],
-        { height: HEIGHT[size] },
+        { height: h },
         fullWidth && styles.fullWidth,
         isDisabled && styles.disabled,
         style,
@@ -49,9 +83,7 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={labelColor(variant)} size="small" />
       ) : (
-        <Typography variant="button" color={labelColor(variant)}>
-          {label}
-        </Typography>
+        <Typography variant="button" color={labelColor(variant)}>{label}</Typography>
       )}
     </PressableScale>
   );
@@ -59,12 +91,9 @@ export function Button({
 
 function labelColor(variant: Variant): string {
   switch (variant) {
-    case 'accent':
-      return colors.textPrimary;
-    case 'outline':
-      return colors.accent;
-    case 'ghost':
-      return colors.textSecondary;
+    case 'outline': return colors.accent;
+    case 'ghost':   return colors.textSecondary;
+    default:        return colors.textPrimary;
   }
 }
 
@@ -74,10 +103,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
-  },
-  accent: {
-    backgroundColor: colors.accent,
-    ...shadows.button,
   },
   outline: {
     backgroundColor: 'transparent',

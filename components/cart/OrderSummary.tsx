@@ -15,9 +15,11 @@ interface SummaryRowProps {
   label: string;
   value: string;
   highlight?: boolean;
+  totalColor?: boolean;
 }
 
-function SummaryRow({ label, value, highlight = false }: SummaryRowProps) {
+function SummaryRow({ label, value, highlight = false, totalColor = false }: SummaryRowProps) {
+  const valueColor = totalColor ? colors.totalBlue : (highlight ? colors.textPrimary : colors.textSecondary);
   return (
     <View style={styles.row}>
       <Typography
@@ -29,7 +31,8 @@ function SummaryRow({ label, value, highlight = false }: SummaryRowProps) {
       </Typography>
       <Typography
         variant={highlight ? 'price' : 'caption'}
-        color={highlight ? colors.textPrimary : colors.textSecondary}
+        weight={totalColor ? 'bold' : (highlight ? 'bold' : 'regular')}
+        color={valueColor}
       >
         {value}
       </Typography>
@@ -53,7 +56,7 @@ export function OrderSummary({ subtotal }: OrderSummaryProps) {
         value={freeShipping ? 'Free' : '$15.00'}
       />
       <Divider style={styles.divider} />
-      <SummaryRow label="Total" value={`$${total.toFixed(2)}`} highlight />
+      <SummaryRow label="Total" value={`$${total.toFixed(2)}`} highlight totalColor />
       {freeShipping && (
         <Typography variant="caption" color={colors.success} style={styles.freeShipping}>
           You qualify for free shipping!

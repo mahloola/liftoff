@@ -9,8 +9,9 @@ import { CategoryFilter } from '@/components/home/CategoryFilter';
 import { ProductCard } from '@/components/home/ProductCard';
 import { Typography } from '@/components/ui/Typography';
 import { PressableScale } from '@/components/ui/PressableScale';
-import { colors, spacing } from '@/constants/theme';
+import { colors, spacing, gradientButtonShadow, borderRadius } from '@/constants/theme';
 
+import SvgIndex from '@/assets/svg/svg-index.svg';
 import SearchIcon from '@/assets/svg/misc/Search.svg';
 
 interface FadeInCardProps {
@@ -19,12 +20,12 @@ interface FadeInCardProps {
 }
 
 function FadeInCard({ delay, children }: FadeInCardProps) {
-  const opacity = useRef(new Animated.Value(0)).current;
+  const opacity   = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(12)).current;
 
   useEffect(() => {
     Animated.parallel([
-      Animated.timing(opacity, { toValue: 1, duration: 280, delay, useNativeDriver: true }),
+      Animated.timing(opacity,    { toValue: 1, duration: 280, delay, useNativeDriver: true }),
       Animated.timing(translateY, { toValue: 0, duration: 280, delay, useNativeDriver: true }),
     ]).start();
   }, [opacity, translateY, delay]);
@@ -50,28 +51,25 @@ export default function HomeScreen() {
     ? filteredProducts
     : PRODUCTS.filter((p) => p.id !== FEATURED_PRODUCT.id);
 
+  // Scale SVG polygon to screen dimensions
+  const svgW = width;
+  const svgH = width * (695 / 390);
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Background gradient polygon — lowest z layer */}
+      {/* Background polygon SVG — lowest layer */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
-        <LinearGradient
-          colors={['rgba(43, 107, 255, 0.55)', 'rgba(26, 79, 191, 0.35)', 'rgba(10, 15, 30, 0)']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0.85, y: 1 }}
-          style={{
-            position: 'absolute',
-            top: -height * 0.08,
-            left: -40,
-            width: width * 1.25,
-            height: height * 0.68,
-            transform: [{ skewY: '-8deg' }],
-          }}
+        <SvgIndex
+          width={svgW}
+          height={svgH}
+          preserveAspectRatio="none"
+          style={{ position: 'absolute', top: 0, left: 0 }}
         />
       </View>
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: height * 0.15 }]}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
@@ -79,12 +77,14 @@ export default function HomeScreen() {
           <Typography variant="display" weight="bold">
             Choose Your Bike
           </Typography>
+
+          {/* Search button — gradient + white border + shadow */}
           <PressableScale onPress={() => {}} style={styles.searchBtn}>
             <LinearGradient
-              colors={[colors.gradientEnd, colors.accent]}
+              colors={[colors.gradientStart, colors.gradientEnd]}
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 0 }}
-              style={[StyleSheet.absoluteFill, { borderRadius: 20 }]}
+              style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.pill }]}
             />
             <View style={styles.searchBtnIcon}>
               <SearchIcon width={22} height={22} color={colors.textPrimary} />
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: spacing.xxl,
     gap: spacing.xl,
   },
   header: {
@@ -132,20 +131,15 @@ const styles = StyleSheet.create({
   searchBtn: {
     width: 40,
     height: 40,
-    borderRadius: 20,
+    borderRadius: borderRadius.pill,
     backgroundColor: colors.gradientEnd,
-    shadowColor: colors.accent,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.7)',
+    ...gradientButtonShadow,
   },
   searchBtnIcon: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -3,14 +3,14 @@ import { View, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ProductCategory } from '@/types';
 import { PressableScale } from '@/components/ui/PressableScale';
-import { colors, spacing, borderRadius } from '@/constants/theme';
+import { colors, spacing, borderRadius, gradientButtonShadow } from '@/constants/theme';
 
-import BicycleIcon from '@/assets/svg/products/Bicycle.svg';
-import RoadIcon from '@/assets/svg/products/Road.svg';
+import BicycleIcon  from '@/assets/svg/products/Bicycle.svg';
+import RoadIcon     from '@/assets/svg/products/Road.svg';
 import MountainIcon from '@/assets/svg/products/Mountain.svg';
-import HelmetIcon from '@/assets/svg/products/Helmet.svg';
+import HelmetIcon   from '@/assets/svg/products/Helmet.svg';
 
-// 2×2 grid icon for the "All" button
+// 2×2 grid squares — "All" icon
 function AllIcon({ width = 22, height = 22, color = '#fff' }: { width?: number; height?: number; color?: string }) {
   const box = Math.floor((Math.min(width, height) - 4) / 2);
   return (
@@ -30,14 +30,14 @@ interface Category {
 }
 
 const CATEGORIES: Category[] = [
-  { key: 'all', Icon: AllIcon as IconFC },
-  { key: 'bicycle', Icon: BicycleIcon as IconFC },
-  { key: 'road', Icon: RoadIcon as IconFC },
+  { key: 'all',      Icon: AllIcon as IconFC },
+  { key: 'bicycle',  Icon: BicycleIcon  as IconFC },
+  { key: 'road',     Icon: RoadIcon     as IconFC },
   { key: 'mountain', Icon: MountainIcon as IconFC },
-  { key: 'helmet', Icon: HelmetIcon as IconFC },
+  { key: 'helmet',   Icon: HelmetIcon   as IconFC },
 ];
 
-// Each button is offset downward by this many px, creating an uphill left-to-right trajectory.
+// Uphill translateY: leftmost (All) is lowest, rightmost (Helmet) is highest
 const SLANT_OFFSETS = [20, 15, 10, 5, 0];
 
 interface CategoryFilterProps {
@@ -49,8 +49,15 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
   return (
     <View style={styles.row}>
       {CATEGORIES.map(({ key, Icon }, idx) => {
-        const active = selected === key;
+        const active  = selected === key;
         const offsetY = SLANT_OFFSETS[idx] ?? 0;
+
+        const iconColors = active
+          ? [colors.gradientStart, colors.gradientEnd] as const
+          : [colors.panelStart,    colors.panelEnd]    as const;
+
+        const iconColor = active ? colors.textPrimary : colors.navInactive;
+
         return (
           <PressableScale
             key={key}
@@ -58,20 +65,17 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
             onPress={() => onSelect(key)}
             style={[styles.item, { transform: [{ translateY: offsetY }] }]}
           >
-            {active ? (
-              <LinearGradient
-                colors={[colors.gradientEnd, colors.accent]}
-                start={{ x: 0, y: 1 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.iconWrap}
-              >
-                <Icon width={22} height={22} color={colors.textPrimary} />
-              </LinearGradient>
-            ) : (
-              <View style={[styles.iconWrap, styles.iconWrapInactive]}>
-                <Icon width={22} height={22} color={colors.navInactive} />
-              </View>
-            )}
+            <LinearGradient
+              colors={iconColors}
+              start={{ x: 0, y: 1 }}
+              end={{ x: 1, y: 0 }}
+              style={[
+                styles.iconWrap,
+                active && styles.iconWrapActive,
+              ]}
+            >
+              <Icon width={22} height={22} color={iconColor} />
+            </LinearGradient>
           </PressableScale>
         );
       })}
@@ -96,8 +100,12 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
-  iconWrapInactive: {
-    backgroundColor: colors.surface,
+  iconWrapActive: {
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
+    ...gradientButtonShadow,
+    borderRadius: borderRadius.md,
   },
 });
