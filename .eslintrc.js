@@ -11,6 +11,8 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
     // Reanimated sharedValue.value = ... is intentional mutation — not a React anti-pattern
     'react-hooks/immutability': 'off',
+    // Resetting loading state at the top of an effect is valid for data-fetching hooks
+    'react-hooks/set-state-in-effect': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-explicit-any': 'warn',
   },
