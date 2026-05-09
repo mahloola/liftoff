@@ -1,4 +1,5 @@
 export { Badge } from './Badge';
+export { LottieLoader } from './LottieLoader';
 export { Button } from './Button';
 export { Card } from './Card';
 export { Divider } from './Divider';

@@ -1,16 +1,39 @@
-import React, { useState, useMemo } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { View, ScrollView, StyleSheet, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ProductCategory } from '@/types';
+import { ProductCategory, Product } from '@/types';
 import { FEATURED_PRODUCT, PRODUCTS } from '@/data/products';
 import { HeroCard } from '@/components/home/HeroCard';
 import { CategoryFilter } from '@/components/home/CategoryFilter';
 import { ProductCard } from '@/components/home/ProductCard';
 import { Typography } from '@/components/ui/Typography';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { colors, spacing } from '@/constants/theme';
 
 import SearchIcon from '@/assets/svg/misc/Search.svg';
-import { PressableScale } from '@/components/ui/PressableScale';
+
+interface FadeInCardProps {
+  delay: number;
+  children: React.ReactNode;
+}
+
+function FadeInCard({ delay, children }: FadeInCardProps) {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(12)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 280, delay, useNativeDriver: true }),
+      Animated.timing(translateY, { toValue: 0, duration: 280, delay, useNativeDriver: true }),
+    ]).start();
+  }, [opacity, translateY, delay]);
+
+  return (
+    <Animated.View style={{ opacity, transform: [{ translateY }] }}>
+      {children}
+    </Animated.View>
+  );
+}
 
 export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('bicycle');
@@ -21,7 +44,7 @@ export default function HomeScreen() {
     );
   }, [selectedCategory]);
 
-  const displayProducts = filteredProducts.length > 0
+  const displayProducts: Product[] = filteredProducts.length > 0
     ? filteredProducts
     : PRODUCTS.filter((p) => p.id !== FEATURED_PRODUCT.id);
 
@@ -57,8 +80,10 @@ export default function HomeScreen() {
             </Typography>
           </View>
           <View style={styles.grid}>
-            {displayProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {displayProducts.map((product, index) => (
+              <FadeInCard key={product.id} delay={index * 80}>
+                <ProductCard product={product} />
+              </FadeInCard>
             ))}
           </View>
         </View>

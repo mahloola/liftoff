@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useBikeSpecs } from '@/hooks/useBikeSpecs';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { LottieLoader } from '@/components/ui/LottieLoader';
 import { Typography } from '@/components/ui/Typography';
 import { Divider } from '@/components/ui/Divider';
 import { colors, spacing, borderRadius } from '@/constants/theme';
@@ -44,13 +44,7 @@ export function BikeSpecsCard({ brand }: BikeSpecsCardProps) {
 
       <Divider style={styles.divider} />
 
-      {loading && (
-        <View style={styles.skeletons}>
-          <Skeleton height={12} width="60%" />
-          <Skeleton height={12} width="80%" />
-          <Skeleton height={12} width="50%" />
-        </View>
-      )}
+      {loading && <LottieLoader size={40} />}
 
       {error && (
         <Typography variant="caption" color={colors.textSecondary}>
@@ -90,9 +84,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     marginVertical: spacing.xs,
-  },
-  skeletons: {
-    gap: spacing.sm,
   },
   specs: {
     gap: spacing.sm,
