@@ -1,13 +1,5 @@
-import React from 'react';
-import { Pressable, PressableProps, StyleProp, ViewStyle } from 'react-native';
-import Animated, {
-  cancelAnimation,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
-
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+import React, { useRef } from 'react';
+import { Animated, Pressable, PressableProps, StyleProp, ViewStyle } from 'react-native';
 
 interface PressableScaleProps extends Omit<PressableProps, 'style'> {
   children: React.ReactNode;
@@ -23,32 +15,28 @@ export function PressableScale({
   disabled,
   ...rest
 }: PressableScaleProps) {
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
+  const scale = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
-    cancelAnimation(scale);
-    scale.value = withSpring(scaleTo, { damping: 15, stiffness: 300 });
+    Animated.spring(scale, { toValue: scaleTo, useNativeDriver: true, speed: 50, bounciness: 0 }).start();
   };
 
   const handlePressOut = () => {
-    cancelAnimation(scale);
-    scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 50, bounciness: 0 }).start();
   };
 
   return (
-    <AnimatedPressable
-      style={[animatedStyle, style]}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={onPress}
-      disabled={disabled}
-      {...rest}
-    >
-      {children}
-    </AnimatedPressable>
+    <Animated.View style={[{ transform: [{ scale }] }, style]}>
+      <Pressable
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={onPress}
+        disabled={disabled}
+        style={{ flex: 1 }}
+        {...rest}
+      >
+        {children}
+      </Pressable>
+    </Animated.View>
   );
 }
