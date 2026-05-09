@@ -25,7 +25,9 @@
       "Bash(rm -rf /e/liftoff-temp && echo \"Cleaned up temp project\")",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Stage 1: scaffold, config, navigation shell, responsive foundation *)"
+      "Bash(git commit -m 'Stage 1: scaffold, config, navigation shell, responsive foundation *)",
+      "Bash(gh repo *)",
+      "Bash(git commit -m 'Stage 2: theme system, UI atom library, Reanimated test mocks *)"
     ]
   }
 }

@@ -335,9 +335,32 @@ Rive is available as a dependency but **will not be used unless** a specific ani
 ## Stage Progress Log
 
 ### Stage 1 — Scaffold, Config, GitHub Repo
-- **Status: PENDING APPROVAL TO BEGIN**
-- Planned: Expo scaffold · TypeScript · NativeWind · Reanimated · ESLint + Prettier · folder structure · navigation shell · GitHub repo creation · boot verification
-- Commit triggered only after: tests pass + user approval
+- **Status: COMPLETE — awaiting approval to proceed to Stage 2**
+- Commit: `b99b49e` — pushed to https://github.com/mahloola/liftoff
+
+**What was completed:**
+- Expo SDK 54, React 19.1, React Native 0.81.5
+- Expo Router 6.0 with typed routes, `(tabs)` group + `product/[id]` stack
+- NativeWind 4.2 + Tailwind 3.4, metro SVG transformer, global.css
+- Reanimated 4.1 + react-native-worklets (Reanimated v4 peer dep)
+- ESLint (expo config) + Prettier + Jest 29 + jest-expo 54
+- `constants/theme.ts` — all design tokens as named variables (eyeballed)
+- `hooks/useScale.ts` — `rw()`, `rh()`, `rs()` proportional scale helpers
+- `components/ui/` — PressableScale, Typography, Card, Badge, Skeleton
+- 5-tab navigation shell + product detail route (all placeholder screens)
+- 8 tests passing, TypeScript clean, Android bundle verified (3.97 MB)
+- GitHub repo: https://github.com/mahloola/liftoff
+
+**Architecture decisions:**
+- `blank-typescript` scaffolded in a temp dir then cherry-picked into LiftOff-Task (create-expo-app refused non-empty dirs)
+- `react-native-worklets` installed explicitly — Reanimated v4 extracted worklets into a separate peer dep
+- `jest-expo@54` + `jest@29` pinned — jest-expo@55 uses Jest 30 APIs incompatible with the current runner
+- `--legacy-peer-deps` for NativeWind — optional `react-dom` peer conflict in expo-router (non-issue for mobile builds)
+- Tailwind stays in `dependencies` — NativeWind uses it at runtime via metro, not just at build time
+
+**Responsive note:** `useScale` base: 390pt. Jest env uses 750pt, so tests assert proportionality not absolute values.
+
+**Tests:** 8 passing — `useScale` math contracts (6) + HomeScreen render (2).
 
 ### Stage 2 — Theme + Shared UI Atoms
 - Status: Not started
