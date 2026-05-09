@@ -380,7 +380,27 @@ Rive is available as a dependency but **will not be used unless** a specific ani
 - Housekeeping: `android/` prebuild folder added to `.gitignore` and untracked (managed workflow)
 
 ### Stage 3 — Home Screen
-- Status: Not started
+- **Status: COMPLETE — awaiting approval to proceed to Stage 4**
+
+**What was completed:**
+- `expo-linear-gradient@~14.0.0` (SDK 54-compatible) installed for hero card gradient overlay
+- `data/products.ts` — mock product catalogue (Electric Bicycle Pro, PEUGOT LR01, SMITH Trade, PILOT CHROMOLY 520)
+- `components/home/HeroCard.tsx` — full-bleed hero card; Image fills card via `absoluteFill`; LinearGradient overlay (30%→62%→100% opacity); Badge top-left; price row with strikethrough original price; "Buy Now" accent button; PressableScale 0.98 wrap; height = `screenWidth * 0.62` (responsive via `useWindowDimensions`)
+- `components/home/CategoryFilter.tsx` — horizontal ScrollView; 4 icons (Bicycle/Road/Mountain/Helmet SVGs); active icon gets accent background + full opacity; inactive gets `navInactive` color; labels beneath each icon
+- `components/home/ProductCard.tsx` — two-column grid card; `width = (screenWidth - 2*lg - sm) / 2` (responsive); ProductImage with aspect 1:1; brand/name/price stacked; PressableScale on whole card
+- `app/(tabs)/index.tsx` — full Home Screen: heading + Search icon header, HeroCard, CategoryFilter with state, "Best Seller" section with product grid; all non-featured products shown; category filter updates grid; `useMemo` for filtered list
+- `__mocks__/expo-linear-gradient.js` — LinearGradient → plain View stub for Jest
+- `__mocks__/svgMock.js` — global SVG stub; registered via `moduleNameMapper` in jest.config.js; prevents per-test mock boilerplate for SVG assets
+- `jest.config.js` — added `expo-linear-gradient` + `\\.svg$` entries to moduleNameMapper
+- `__tests__/HomeScreen.test.tsx` — 10 new tests: heading, featured product, discount badge, Buy Now, price display, Best Seller heading, category labels, product card names, brand names, category tap
+
+**Architecture decisions:**
+- Hero card uses raw `Image` with `absoluteFill` instead of `ProductImage` — hero needs fill-mode (not aspect-ratio box) since card height is screen-derived
+- Global SVG mock via moduleNameMapper prevents test fragility; per-file testID mocks don't work reliably when mapper intercepts all .svg paths to the same file
+- `expo-linear-gradient@14` pinned to SDK 54; npm auto-installed v55 which would be incompatible
+- CategoryFilter shows all products when no match found (fallback prevents empty grid)
+
+**Tests:** 24 passing (10 new + 14 carried from Stages 1–2)
 
 ### Stage 4 — Product Detail + FREE DATA
 - Status: Not started
