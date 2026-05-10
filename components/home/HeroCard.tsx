@@ -29,11 +29,15 @@ export function HeroCard({ product }: HeroCardProps) {
   const cardWidth = Math.min(screenWidth - 32, 430);
 
   const scale = cardWidth / SVG_W;
-  const cardHeight = SVG_H * scale;
+  const VISIBLE_HEIGHT = screenWidth < 380 ? 220 : 250;
+  const cardHeight = VISIBLE_HEIGHT * scale;
 
   // Scale the glass area
   const glassTop = GLASS_TOP * scale;
   const glassHeight = GLASS_HEIGHT * scale;
+
+  const imageTop = glassTop + glassHeight * 0.05;
+  const imageHeight = glassHeight * 0.9;
 
   return (
     <PressableScale
@@ -50,22 +54,45 @@ export function HeroCard({ product }: HeroCardProps) {
           },
         ]}
       >
-        {/* SVG Background */}
-        <HeroContainer width={cardWidth} height={cardHeight} preserveAspectRatio="none" />
+        {/* Shared transformed layer */}
+        <View
+          style={{
+            width: cardWidth,
+            height: SVG_H * scale,
+            transform: [{ translateY: -70 * scale }],
+          }}
+        >
+          {/* SVG Background */}
+          <HeroContainer width={cardWidth} height={SVG_H * scale} preserveAspectRatio="none" />
 
-        {/* Product Image */}
-        <Image
-          source={product.image}
-          resizeMode="contain"
-          style={[
-            styles.bikeImage,
-            {
-              top: glassTop + glassHeight * 0.05,
-              width: cardWidth * 0.82,
-              height: glassHeight * 0.9,
-            },
-          ]}
-        />
+          {/* Product Image */}
+          <Image
+            source={product.image}
+            resizeMode="contain"
+            style={[
+              styles.bikeImage,
+              {
+                top: imageTop,
+                width: cardWidth * 0.82,
+                height: imageHeight,
+              },
+            ]}
+          />
+
+          {/* Discount text */}
+          <Text
+            style={[
+              styles.discountText,
+              {
+                top: imageTop + imageHeight - 10 * scale,
+                left: cardWidth * 0.1,
+                fontSize: Math.max(18, 26 * scale),
+              },
+            ]}
+          >
+            30% OFF
+          </Text>
+        </View>
       </View>
     </PressableScale>
   );
@@ -95,9 +122,8 @@ const styles = StyleSheet.create({
   // },
   discountText: {
     position: 'absolute',
-    left: spacing.xxxl,
-    color: colors.textSecondary,
-    fontSize: 30,
-    fontFamily: 'Poppins_500Medium',
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: 'bold',
+    letterSpacing: 2,
   },
 });

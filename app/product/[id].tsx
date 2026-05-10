@@ -209,7 +209,6 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 10,
     backgroundColor: colors.gradientEnd,
-    borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.7)',
     ...gradientButtonShadow,
   },
@@ -256,9 +255,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.25)',
   },
   dotActive: {
-    width: 18,
-    borderRadius: 3,
-    backgroundColor: colors.gradientStart,
+    backgroundColor: '#ffffff',
   },
   tabCard: {
     marginHorizontal: spacing.lg,

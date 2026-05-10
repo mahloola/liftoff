@@ -125,9 +125,8 @@ const styles = StyleSheet.create({
   searchBtn: {
     width: 40,
     height: 40,
-    borderRadius: 10,
+    borderRadius: borderRadius.pill,
     backgroundColor: colors.gradientEnd,
-    borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.7)',
     ...gradientButtonShadow,
   },

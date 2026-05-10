@@ -5,18 +5,39 @@ import { ProductCategory } from '@/types';
 import { PressableScale } from '@/components/ui/PressableScale';
 import { colors, spacing, borderRadius, gradientButtonShadow } from '@/constants/theme';
 
-import BicycleIcon  from '@/assets/svg/products/Bicycle.svg';
-import RoadIcon     from '@/assets/svg/products/Road.svg';
+import BicycleIcon from '@/assets/svg/products/Bicycle.svg';
+import RoadIcon from '@/assets/svg/products/Road.svg';
 import MountainIcon from '@/assets/svg/products/Mountain.svg';
-import HelmetIcon   from '@/assets/svg/products/Helmet.svg';
+import HelmetIcon from '@/assets/svg/products/Helmet.svg';
 
 // 2×2 grid squares — "All" icon
-function AllIcon({ width = 22, height = 22, color = '#fff' }: { width?: number; height?: number; color?: string }) {
+function AllIcon({
+  width = 22,
+  height = 22,
+  color = '#fff',
+}: {
+  width?: number;
+  height?: number;
+  color?: string;
+}) {
   const box = Math.floor((Math.min(width, height) - 4) / 2);
   return (
-    <View style={{ width, height, flexDirection: 'row', flexWrap: 'wrap', gap: 4, alignContent: 'center', justifyContent: 'center' }}>
-      {[0, 1, 2, 3].map(i => (
-        <View key={i} style={{ width: box, height: box, backgroundColor: color, borderRadius: 2 }} />
+    <View
+      style={{
+        width,
+        height,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 4,
+        alignContent: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {[0, 1, 2, 3].map((i) => (
+        <View
+          key={i}
+          style={{ width: box, height: box, backgroundColor: color, borderRadius: 2 }}
+        />
       ))}
     </View>
   );
@@ -30,11 +51,11 @@ interface Category {
 }
 
 const CATEGORIES: Category[] = [
-  { key: 'all',      Icon: AllIcon as IconFC },
-  { key: 'bicycle',  Icon: BicycleIcon  as IconFC },
-  { key: 'road',     Icon: RoadIcon     as IconFC },
+  { key: 'all', Icon: AllIcon as IconFC },
+  { key: 'bicycle', Icon: BicycleIcon as IconFC },
+  { key: 'road', Icon: RoadIcon as IconFC },
   { key: 'mountain', Icon: MountainIcon as IconFC },
-  { key: 'helmet',   Icon: HelmetIcon   as IconFC },
+  { key: 'helmet', Icon: HelmetIcon as IconFC },
 ];
 
 // Uphill translateY: leftmost (All) is lowest, rightmost (Helmet) is highest
@@ -49,12 +70,12 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
   return (
     <View style={styles.row}>
       {CATEGORIES.map(({ key, Icon }, idx) => {
-        const active  = selected === key;
+        const active = selected === key;
         const offsetY = SLANT_OFFSETS[idx] ?? 0;
 
         const iconColors = active
-          ? [colors.gradientStart, colors.gradientEnd] as const
-          : [colors.panelStart,    colors.panelEnd]    as const;
+          ? ([colors.gradientStart, colors.gradientEnd] as const)
+          : ([colors.panelStart, colors.panelEnd] as const);
 
         const iconColor = active ? colors.textPrimary : colors.navInactive;
 
@@ -69,10 +90,7 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
               colors={iconColors}
               start={{ x: 0, y: 1 }}
               end={{ x: 1, y: 0 }}
-              style={[
-                styles.iconWrap,
-                active && styles.iconWrapActive,
-              ]}
+              style={[styles.iconWrap, active && styles.iconWrapActive]}
             >
               <Icon width={22} height={22} color={iconColor} />
             </LinearGradient>
@@ -103,7 +121,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   iconWrapActive: {
-    borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.6)',
     ...gradientButtonShadow,
     borderRadius: borderRadius.md,

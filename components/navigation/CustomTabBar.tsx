@@ -6,33 +6,28 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import SvgTabs from '@/assets/svg/svg-tabs.svg';
 import SvgActiveTab from '@/assets/svg/svg-active-tab.svg';
 
-import HomeIcon    from '@/assets/svg/navbar/Subtract.svg';
-import MapIcon     from '@/assets/svg/navbar/map.fill.svg';
-import CartIcon    from '@/assets/svg/navbar/cart.fill.svg';
-import PersonIcon  from '@/assets/svg/navbar/person.fill.svg';
-import OrdersIcon  from '@/assets/svg/navbar/doc.text.fill.svg';
+import HomeIcon from '@/assets/svg/navbar/Subtract.svg';
+import MapIcon from '@/assets/svg/navbar/map.fill.svg';
+import CartIcon from '@/assets/svg/navbar/cart.fill.svg';
+import PersonIcon from '@/assets/svg/navbar/person.fill.svg';
+import OrdersIcon from '@/assets/svg/navbar/doc.text.fill.svg';
 
 const NAV_ICONS = [HomeIcon, MapIcon, CartIcon, PersonIcon, OrdersIcon];
 
 const SVG_HEIGHT = 103;
-const ACTIVE_W   = 107;
-const ACTIVE_H   = 111;
+const ACTIVE_W = 107;
+const ACTIVE_H = 111;
 
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const { width } = useWindowDimensions();
-  const insets    = useSafeAreaInsets();
-  const tabW      = width / state.routes.length;
-  const totalH    = SVG_HEIGHT + insets.bottom;
+  const insets = useSafeAreaInsets();
+  const tabW = width / state.routes.length;
+  const totalH = SVG_HEIGHT + insets.bottom;
 
   return (
     <View style={[styles.container, { height: totalH, width }]}>
       {/* Background shape */}
-      <SvgTabs
-        width={width}
-        height={SVG_HEIGHT}
-        preserveAspectRatio="none"
-        style={styles.bgSvg}
-      />
+      <SvgTabs width={width} height={SVG_HEIGHT} preserveAspectRatio="none" style={styles.bgSvg} />
 
       {/* Inset fill below the SVG shape (safe-area padding) */}
       <View style={[styles.insetFill, { height: insets.bottom }]} />
@@ -41,7 +36,7 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
       <View style={[styles.iconsRow, { height: SVG_HEIGHT }]}>
         {state.routes.map((route, index) => {
           const focused = state.index === index;
-          const Icon    = NAV_ICONS[index] ?? HomeIcon;
+          const Icon = NAV_ICONS[index] ?? HomeIcon;
 
           return (
             <Pressable
@@ -53,14 +48,15 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                 <SvgActiveTab
                   width={ACTIVE_W}
                   height={ACTIVE_H}
-                  style={styles.activeIndicator}
+                  style={[
+                    styles.activeIndicator,
+                    {
+                      marginLeft: ACTIVE_W / 2 - 40,
+                    },
+                  ]}
                 />
               )}
-              <Icon
-                width={24}
-                height={24}
-                style={{ opacity: focused ? 1 : 0.4 }}
-              />
+              <Icon width={24} height={24} style={{ opacity: focused ? 1 : 0.4 }} />
             </Pressable>
           );
         })}
@@ -78,7 +74,7 @@ const styles = StyleSheet.create({
   },
   bgSvg: {
     position: 'absolute',
-    top: 0,
+    top: 23,
     left: 0,
   },
   insetFill: {
@@ -91,7 +87,7 @@ const styles = StyleSheet.create({
   iconsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 16,   // push icons below the angled top edge
+    paddingTop: 16, // push icons below the angled top edge
   },
   tab: {
     alignItems: 'center',
