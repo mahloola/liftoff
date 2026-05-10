@@ -28,7 +28,13 @@ export function CartItem({ item, onIncrement, onDecrement }: CartItemProps) {
       </LinearGradient>
 
       <View style={styles.info}>
-        <Typography variant="body" weight="bold" numberOfLines={2} color={colors.textPrimary} style={styles.name}>
+        <Typography
+          variant="body"
+          weight="bold"
+          numberOfLines={2}
+          color={colors.textPrimary}
+          style={styles.name}
+        >
           {product.name}
         </Typography>
         <Text style={styles.price}>${(product.price * quantity).toFixed(2)}</Text>
@@ -96,16 +102,16 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   subtractBtn: {
-    width: 36,
-    height: 36,
+    width: 48,
+    height: 48,
     borderRadius: 5,
     backgroundColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   addBtn: {
-    width: 36,
-    height: 36,
+    width: 48,
+    height: 48,
     borderRadius: 5,
     overflow: 'hidden',
     alignItems: 'center',
@@ -113,8 +119,7 @@ const styles = StyleSheet.create({
   },
   qtySymbol: {
     color: colors.textPrimary,
-    fontSize: 22,
-    fontFamily: 'Poppins_600SemiBold',
+    fontSize: 35,
   },
   qty: {
     width: 24,

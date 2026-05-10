@@ -4,6 +4,7 @@ import { Typography } from '@/components/ui/Typography';
 import { Divider } from '@/components/ui/Divider';
 import { colors, spacing, borderRadius } from '@/constants/theme';
 import { Button } from '../ui';
+import { rgbaColor } from 'react-native-reanimated/lib/typescript/Colors';
 
 const TAX_RATE = 0.08;
 const FREE_SHIPPING_THRESHOLD = 500;
@@ -109,6 +110,7 @@ const styles = StyleSheet.create({
   freeShipping: {
     textAlign: 'center',
     marginTop: spacing.xs,
+    color: 'rgba(255, 255, 255, 0.4)',
   },
   coupon: {
     margin: spacing.md,
