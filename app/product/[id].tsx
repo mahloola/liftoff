@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   useWindowDimensions,
+  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -44,7 +45,7 @@ export default function ProductDetailScreen() {
             colors={[colors.gradientStart, colors.gradientEnd]}
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 0 }}
-            style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
+            style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
           />
           <View style={styles.backBtnIcon}>
             <ChevronLeft width={20} height={20} />
@@ -84,7 +85,7 @@ export default function ProductDetailScreen() {
           colors={[colors.gradientStart, colors.gradientEnd]}
           start={{ x: 0, y: 1 }}
           end={{ x: 1, y: 0 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
+          style={[StyleSheet.absoluteFill, { borderRadius: 12 }]}
         />
         <View style={styles.backBtnIcon}>
           <ChevronLeft width={20} height={20} />
@@ -178,7 +179,10 @@ export default function ProductDetailScreen() {
             variant="accent"
             size="md"
             disabled={!product.inStock}
-            onPress={() => addToCart(product)}
+            onPress={() => {
+                addToCart(product);
+                Alert.alert('Added to Cart', `${product.name} has been added to your cart.`);
+              }}
             style={styles.addToCartBtn}
           />
         </View>
@@ -199,10 +203,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: spacing.lg,
     zIndex: 10,
-    width: 40,
-    height: 40,
-    borderRadius: 10,
+    width: 48,
+    height: 48,
+    borderRadius: 12,
     backgroundColor: colors.gradientEnd,
+    borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.7)',
     ...gradientButtonShadow,
   },

@@ -36,7 +36,6 @@ function FadeInCard({ delay, children }: FadeInCardProps) {
 export default function HomeScreen() {
   const { width, height } = useWindowDimensions();
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all');
-
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(
       (p) =>
@@ -94,9 +93,17 @@ export default function HomeScreen() {
 
         <View style={styles.grid}>
           {displayProducts.map((product, index) => (
-            <FadeInCard key={product.id} delay={index * 80}>
-              <ProductCard product={product} />
-            </FadeInCard>
+            <View
+              key={product.id}
+              style={(() => {
+                const offset = index % 2 === 0 ? 0 : index === 3 ? -54 : -35;
+                return offset !== 0 ? { transform: [{ translateY: offset }] } : undefined;
+              })()}
+            >
+              <FadeInCard delay={index * 80}>
+                <ProductCard product={product} index={index} compact={index % 2 === 1} />
+              </FadeInCard>
+            </View>
           ))}
         </View>
       </ScrollView>
@@ -141,12 +148,14 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: spacing.md,
+    marginTop: -spacing.xxxl,
+    paddingVertical: spacing.md,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
+    paddingHorizontal: spacing.md,
+    gap: spacing.md,
   },
   indexSvg: {
     position: 'absolute',

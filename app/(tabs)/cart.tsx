@@ -59,14 +59,16 @@ export default function CartScreen() {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {items.map((item) => (
-            <CartItem
-              key={item.product.id}
-              item={item}
-              onIncrement={() => increment(item.product.id)}
-              onDecrement={() => decrement(item.product.id)}
-              onRemove={() => removeFromCart(item.product.id)}
-            />
+          {items.map((item, idx) => (
+            <React.Fragment key={item.product.id}>
+              {idx > 0 && <View style={styles.separator} />}
+              <CartItem
+                item={item}
+                onIncrement={() => increment(item.product.id)}
+                onDecrement={() => decrement(item.product.id)}
+                onRemove={() => removeFromCart(item.product.id)}
+              />
+            </React.Fragment>
           ))}
 
           <OrderSummary subtotal={subtotal} />
@@ -110,6 +112,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: 'rgba(255,255,255,0.12)',
   },
   checkoutBtn: {
     marginTop: spacing.sm,

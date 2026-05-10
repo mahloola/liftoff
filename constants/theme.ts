@@ -95,8 +95,8 @@ export const gradientButtonShadow = {
   shadowColor:   '#10141C',
   shadowOffset:  { width: 0, height: 20 },
   shadowOpacity: 1,
-  shadowRadius:  20,
-  elevation:     10,
+  shadowRadius:  30,
+  elevation:     12,
 } as const;
 
 export const shadows = {

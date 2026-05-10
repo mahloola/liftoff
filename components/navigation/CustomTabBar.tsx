@@ -16,11 +16,13 @@ const NAV_ICONS = [HomeIcon, MapIcon, CartIcon, PersonIcon, OrdersIcon];
 
 const SVG_HEIGHT = 103;
 const ACTIVE_W = 107;
-const ACTIVE_H = 111;
+const ACTIVE_H = 114;
 
 export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
+
+  if (state.routes[state.index]?.name === 'cart') return null;
   const tabW = width / state.routes.length;
   const totalH = SVG_HEIGHT + insets.bottom;
 
@@ -48,12 +50,7 @@ export function CustomTabBar({ state, navigation }: BottomTabBarProps) {
                 <SvgActiveTab
                   width={ACTIVE_W}
                   height={ACTIVE_H}
-                  style={[
-                    styles.activeIndicator,
-                    {
-                      marginLeft: ACTIVE_W / 2 - 40,
-                    },
-                  ]}
+                  style={[styles.activeIndicator, { left: (tabW - ACTIVE_W) / 2 + 6 }]}
                 />
               )}
               <Icon width={24} height={24} style={{ opacity: focused ? 1 : 0.4 }} />
@@ -97,7 +94,5 @@ const styles = StyleSheet.create({
   activeIndicator: {
     position: 'absolute',
     top: -28,
-    alignSelf: 'center',
-    marginLeft: -(ACTIVE_W / 2 - 12),
   },
 });

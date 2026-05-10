@@ -123,12 +123,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#242C3B',
     boxShadow: '4px 10px 30px 0px #191E29 inset',
     height: 44,
-    borderRadius: '8px',
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
     color: 'white',
   },
   couponBtn: {
     width: '30%',
     height: 44,
-    borderRadius: 10,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
   },
 });

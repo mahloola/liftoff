@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ProductCategory } from '@/types';
 import { PressableScale } from '@/components/ui/PressableScale';
@@ -10,37 +10,8 @@ import RoadIcon from '@/assets/svg/products/Road.svg';
 import MountainIcon from '@/assets/svg/products/Mountain.svg';
 import HelmetIcon from '@/assets/svg/products/Helmet.svg';
 
-// 2×2 grid squares — "All" icon
-function AllIcon({
-  width = 22,
-  height = 22,
-  color = '#fff',
-}: {
-  width?: number;
-  height?: number;
-  color?: string;
-}) {
-  const box = Math.floor((Math.min(width, height) - 4) / 2);
-  return (
-    <View
-      style={{
-        width,
-        height,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 4,
-        alignContent: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      {[0, 1, 2, 3].map((i) => (
-        <View
-          key={i}
-          style={{ width: box, height: box, backgroundColor: color, borderRadius: 2 }}
-        />
-      ))}
-    </View>
-  );
+function AllIcon({ color = '#fff' }: { width?: number; height?: number; color?: string }) {
+  return <Text style={{ color, fontSize: 13, fontFamily: 'Poppins_600SemiBold' }}>All</Text>;
 }
 
 type IconFC = React.FC<{ width: number; height: number; color?: string }>;
@@ -59,7 +30,7 @@ const CATEGORIES: Category[] = [
 ];
 
 // Uphill translateY: leftmost (All) is lowest, rightmost (Helmet) is highest
-const SLANT_OFFSETS = [20, 15, 10, 5, 0];
+const SLANT_OFFSETS = [40, 30, 20, 10, 0];
 
 interface CategoryFilterProps {
   selected: ProductCategory | 'all';
@@ -84,6 +55,7 @@ export function CategoryFilter({ selected, onSelect }: CategoryFilterProps) {
             key={key}
             testID={`category-${key}`}
             onPress={() => onSelect(key)}
+            scaleTo={0.78}
             style={[styles.item, { transform: [{ translateY: offsetY }] }]}
           >
             <LinearGradient
