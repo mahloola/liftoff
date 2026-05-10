@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleSheet, View, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { PressableScale } from './PressableScale';
 import { Typography } from './Typography';
@@ -39,7 +39,7 @@ export function Button({
       <PressableScale
         onPress={onPress}
         disabled={isDisabled}
-        scaleTo={0.97}
+        scaleTo={0.94}
         style={[
           { height: h, borderRadius: borderRadius.md, backgroundColor: colors.gradientEnd },
           fullWidth && styles.fullWidth,
@@ -54,14 +54,15 @@ export function Button({
           end={{ x: 1, y: 1 }}
           style={[StyleSheet.absoluteFill, { borderRadius: borderRadius.md }]}
         />
-        <Typography variant="button" color={colors.textPrimary}>{loading ? '' : label}</Typography>
-        {loading && (
-          <ActivityIndicator
-            color={colors.textPrimary}
-            size="small"
-            style={StyleSheet.absoluteFill}
-          />
-        )}
+        <View style={styles.accentContent}>
+          {loading ? (
+            <ActivityIndicator color={colors.textPrimary} size="small" />
+          ) : (
+            <Typography variant="button" color={colors.textPrimary}>
+              {label}
+            </Typography>
+          )}
+        </View>
       </PressableScale>
     );
   }
@@ -83,7 +84,9 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={labelColor(variant)} size="small" />
       ) : (
-        <Typography variant="button" color={labelColor(variant)}>{label}</Typography>
+        <Typography variant="button" color={labelColor(variant)}>
+          {label}
+        </Typography>
       )}
     </PressableScale>
   );
@@ -91,9 +94,12 @@ export function Button({
 
 function labelColor(variant: Variant): string {
   switch (variant) {
-    case 'outline': return colors.accent;
-    case 'ghost':   return colors.textSecondary;
-    default:        return colors.textPrimary;
+    case 'outline':
+      return colors.accent;
+    case 'ghost':
+      return colors.textSecondary;
+    default:
+      return colors.textPrimary;
   }
 }
 
@@ -111,6 +117,11 @@ const styles = StyleSheet.create({
   },
   ghost: {
     backgroundColor: 'transparent',
+  },
+  accentContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fullWidth: {
     alignSelf: 'stretch',

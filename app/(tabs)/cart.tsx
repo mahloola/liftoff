@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCart } from '@/context/CartContext';
 import { CartItem } from '@/components/cart/CartItem';
 import { OrderSummary } from '@/components/cart/OrderSummary';
@@ -8,22 +8,40 @@ import { CheckoutPanel } from '@/components/cart/CheckoutPanel';
 import { Typography } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { colors, spacing } from '@/constants/theme';
+import SlideToCheckout from '@/components/ui/SlideToCheckout';
+import { PressableScale } from '@/components/ui';
+import { LinearGradient } from 'expo-linear-gradient';
+import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
+
+import { useLocalSearchParams, router } from 'expo-router';
 
 export default function CartScreen() {
   const { items, increment, decrement, removeFromCart, subtotal } = useCart();
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const isEmpty = items.length === 0;
-
+  const insets = useSafeAreaInsets();
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <PressableScale
+        onPress={() => router.back()}
+        style={[styles.backBtn, { top: insets.top + spacing.sm }]}
+      >
+        <LinearGradient
+          colors={[colors.gradientStart, colors.gradientEnd]}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
+        />
+        <View style={styles.backBtnIcon}>
+          <ChevronLeft width={20} height={20} />
+        </View>
+      </PressableScale>
+
       <View style={styles.header}>
-        <Typography variant="display" weight="bold">My Cart</Typography>
-        {!isEmpty && (
-          <Typography variant="caption" color={colors.textSecondary}>
-            {items.length} {items.length === 1 ? 'item' : 'items'}
-          </Typography>
-        )}
+        <Typography variant="display" weight="bold">
+          My Shopping Cart
+        </Typography>
       </View>
 
       {isEmpty ? (
@@ -53,21 +71,11 @@ export default function CartScreen() {
 
           <OrderSummary subtotal={subtotal} />
 
-          <Button
-            label="Proceed to Checkout"
-            variant="accent"
-            size="lg"
-            fullWidth
-            onPress={() => setCheckoutOpen(true)}
-            style={styles.checkoutBtn}
-          />
+          <SlideToCheckout />
         </ScrollView>
       )}
 
-      <CheckoutPanel
-        visible={checkoutOpen}
-        onClose={() => setCheckoutOpen(false)}
-      />
+      <CheckoutPanel visible={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
     </SafeAreaView>
   );
 }
@@ -78,6 +86,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
+    display: 'flex',
+    alignItems: 'center',
+    marginBottom: '10%',
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.sm,
     paddingBottom: spacing.md,
@@ -90,6 +101,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.xxl,
     gap: spacing.md,
+    justifyContent: 'center',
+    display: 'flex',
+    alignItems: 'center',
   },
   empty: {
     flex: 1,
@@ -99,5 +113,24 @@ const styles = StyleSheet.create({
   },
   checkoutBtn: {
     marginTop: spacing.sm,
+  },
+  backBtn: {
+    position: 'absolute',
+    left: spacing.lg,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: colors.gradientEnd,
+    borderColor: 'rgba(255,255,255,0.7)',
+  },
+  backBtnIcon: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

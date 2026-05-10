@@ -22,7 +22,6 @@ import { colors, spacing, borderRadius, gradientButtonShadow } from '@/constants
 import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
 import SvgProduct from '@/assets/svg/svg-product.svg';
 import SvgProductBottom from '@/assets/svg/svg-product-bottom.svg';
-
 type Tab = 'description' | 'specification';
 
 export default function ProductDetailScreen() {
@@ -98,9 +97,10 @@ export default function ProductDetailScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Product title */}
-        <View style={[styles.titleArea, { paddingTop: insets.top + spacing.xl + 40 }]}>
+        <View style={[styles.titleArea, { paddingTop: insets.top + spacing.lg }]}>
+          {/* spacing.lg is hard coded to avoid the complexity of transform to get a perfect lineup */}
           <Typography variant="heading" weight="bold" style={styles.titleText}>
-            {product.brand} — {product.model}
+            {product.brand} - {product.model}
           </Typography>
         </View>
 
@@ -117,7 +117,13 @@ export default function ProductDetailScreen() {
         </View>
 
         {/* Description / Specification tabs + content */}
-        <View style={styles.tabCard}>
+        <LinearGradient
+          colors={['#353F54', '#222834']}
+          locations={[0, 0.5847]}
+          start={{ x: 0.31, y: 0.04 }}
+          end={{ x: 0.69, y: 0.96 }}
+          style={styles.tabCard}
+        >
           {/* Tab row */}
           <View style={styles.tabRow}>
             {(['description', 'specification'] as Tab[]).map((tab) => {
@@ -127,7 +133,7 @@ export default function ProductDetailScreen() {
                 <TouchableOpacity
                   key={tab}
                   onPress={() => setActiveTab(tab)}
-                  style={styles.tabBtn}
+                  style={isActive ? styles.activeTabBtn : styles.tabBtn}
                   activeOpacity={0.7}
                 >
                   <Text
@@ -139,7 +145,6 @@ export default function ProductDetailScreen() {
                   >
                     {label}
                   </Text>
-                  {isActive && <View style={styles.tabUnderline} />}
                 </TouchableOpacity>
               );
             })}
@@ -160,33 +165,22 @@ export default function ProductDetailScreen() {
               <BikeSpecsCard brand={product.brand} />
             )}
           </View>
-        </View>
+        </LinearGradient>
       </ScrollView>
 
       {/* Bottom container: price + Add to Cart */}
       <View style={[styles.bottomOuter, { height: bottomH }]}>
-        <SvgProductBottom
-          width={width}
-          height={154}
-          preserveAspectRatio="none"
-          style={[StyleSheet.absoluteFill, { bottom: insets.bottom - 50 }]}
-        />
         <View style={[styles.bottomContent, { paddingBottom: insets.bottom }]}>
-          <View style={styles.priceBlock}>
-            <Typography variant="caption" color={colors.textSecondary}>
-              Price
-            </Typography>
-            <Text style={styles.priceText}>${product.price.toLocaleString()}</Text>
-          </View>
-          <View style={styles.cartBtnWrap}>
-            <Button
-              label={product.inStock ? 'Add to Cart' : 'Out of Stock'}
-              variant="accent"
-              size="md"
-              disabled={!product.inStock}
-              onPress={() => addToCart(product)}
-            />
-          </View>
+          <Text style={styles.priceText}>${product.price.toLocaleString()}</Text>
+
+          <Button
+            label={product.inStock ? 'Add to Cart' : 'Out of Stock'}
+            variant="accent"
+            size="md"
+            disabled={!product.inStock}
+            onPress={() => addToCart(product)}
+            style={styles.addToCartBtn}
+          />
         </View>
       </View>
     </View>
@@ -255,12 +249,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.25)',
   },
   dotActive: {
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
   },
   tabCard: {
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.lg,
-    backgroundColor: colors.panelStart,
+    marginTop: spacing.xxl,
+    height: '100%',
+    width: '100%',
     borderRadius: borderRadius.xl,
     overflow: 'hidden',
     borderWidth: 0.5,
@@ -268,27 +262,36 @@ const styles = StyleSheet.create({
   },
   tabRow: {
     flexDirection: 'row',
-    borderBottomWidth: 0.5,
-    borderBottomColor: 'rgba(255,255,255,0.08)',
   },
   tabBtn: {
+    marginTop: 30,
+    marginHorizontal: 30,
+    borderRadius: 10,
     flex: 1,
     alignItems: 'center',
     paddingVertical: spacing.md,
     gap: 2,
+    backgroundColor: '#323B4F',
+    boxShadow: '4px 4px 10px 0px #252B39, -4px -4px 10px 0px #38445A',
+  },
+  activeTabBtn: {
+    marginTop: 30,
+    marginHorizontal: 30,
+    borderRadius: 10,
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: spacing.md,
+    gap: 2,
+    backgroundColor: '#28303F',
+    boxShadow: '4px 4px 8px 0px #202633 inset, -4px -4px 8px 0px #364055 inset',
   },
   tabLabel: {
-    fontSize: 14,
-    fontFamily: 'Poppins_600SemiBold',
+    color: colors.tabTextStart,
+    fontFamily: 'Poppins_400',
+    fontSize: 15,
   },
   tabLabelActive: {
-    color: colors.tabTextStart,
-  },
-  tabUnderline: {
-    height: 2,
-    width: 40,
-    borderRadius: 1,
-    backgroundColor: colors.tabTextStart,
+    fontFamily: 'Poppins_600SemiBold',
   },
   tabContent: {
     padding: spacing.lg,
@@ -297,6 +300,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   descText: {
+    fontSize: 17,
     lineHeight: 22,
   },
   bottomOuter: {
@@ -305,6 +309,9 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     overflow: 'visible',
+    backgroundColor: '#262E3D',
+    boxShadow: '0px -10px 40px 0px #1C222E',
+    borderRadius: 50,
   },
   bottomContent: {
     position: 'absolute',
@@ -314,18 +321,18 @@ const styles = StyleSheet.create({
     height: 104,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: spacing.xl,
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.xxl,
     gap: spacing.lg,
   },
-  priceBlock: {
-    gap: 2,
-  },
   priceText: {
-    fontSize: 22,
-    fontFamily: 'Poppins_700Bold',
+    fontSize: 35,
     color: colors.priceBlue,
   },
-  cartBtnWrap: {
-    flex: 1,
+  addToCartBtn: {
+    width: 150,
+    display: 'flex',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
 });
