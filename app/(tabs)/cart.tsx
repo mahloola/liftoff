@@ -24,63 +24,63 @@ export default function CartScreen() {
   const insets = useSafeAreaInsets();
   return (
     <AnimatedScreen>
-    <SafeAreaView style={styles.container} edges={['top']}>
-      <PressableScale
-        onPress={() => router.back()}
-        style={[styles.backBtn, { top: insets.top + spacing.sm }]}
-      >
-        <LinearGradient
-          colors={[colors.gradientStart, colors.gradientEnd]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
-        />
-        <View style={styles.backBtnIcon}>
-          <ChevronLeft width={20} height={20} />
-        </View>
-      </PressableScale>
-
-      <View style={styles.header}>
-        <Typography variant="display" weight="bold">
-          My Shopping Cart
-        </Typography>
-      </View>
-
-      {isEmpty ? (
-        <View style={styles.empty}>
-          <Typography variant="heading" color={colors.textSecondary}>
-            Your cart is empty
-          </Typography>
-          <Typography variant="body" color={colors.navInactive}>
-            Add some bikes to get started
-          </Typography>
-        </View>
-      ) : (
-        <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <PressableScale
+          onPress={() => router.back()}
+          style={[styles.backBtn, { top: insets.top + spacing.sm }]}
         >
-          {items.map((item, idx) => (
-            <React.Fragment key={item.product.id}>
-              {idx > 0 && <View style={styles.separator} />}
-              <CartItem
-                item={item}
-                onIncrement={() => increment(item.product.id)}
-                onDecrement={() => decrement(item.product.id)}
-                onRemove={() => removeFromCart(item.product.id)}
-              />
-            </React.Fragment>
-          ))}
+          <LinearGradient
+            colors={[colors.gradientStart, colors.gradientEnd]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
+          />
+          <View style={styles.backBtnIcon}>
+            <ChevronLeft width={20} height={20} />
+          </View>
+        </PressableScale>
 
-          <OrderSummary subtotal={subtotal} />
+        <View style={styles.header}>
+          <Typography variant="display" weight="bold">
+            My Shopping Cart
+          </Typography>
+        </View>
 
-          <SlideToCheckout />
-        </ScrollView>
-      )}
+        {isEmpty ? (
+          <View style={styles.empty}>
+            <Typography variant="heading" color={colors.textSecondary}>
+              Your cart is empty
+            </Typography>
+            <Typography variant="body" color={colors.navInactive}>
+              Add some bikes to get started
+            </Typography>
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.scroll}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            {items.map((item, idx) => (
+              <React.Fragment key={item.product.id}>
+                <CartItem
+                  item={item}
+                  onIncrement={() => increment(item.product.id)}
+                  onDecrement={() => decrement(item.product.id)}
+                  onRemove={() => removeFromCart(item.product.id)}
+                />
+                {<View style={styles.separator} />}
+              </React.Fragment>
+            ))}
 
-      <CheckoutPanel visible={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
-    </SafeAreaView>
+            <OrderSummary subtotal={subtotal} />
+
+            <SlideToCheckout />
+          </ScrollView>
+        )}
+
+        <CheckoutPanel visible={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
+      </SafeAreaView>
     </AnimatedScreen>
   );
 }
@@ -118,7 +118,8 @@ const styles = StyleSheet.create({
   },
   separator: {
     height: StyleSheet.hairlineWidth,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    alignSelf: 'stretch',
   },
   checkoutBtn: {
     marginTop: spacing.sm,

@@ -1,18 +1,26 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { useBikeSpecs } from '@/hooks/useBikeSpecs';
 import { LottieLoader } from '@/components/ui/LottieLoader';
 import { Typography } from '@/components/ui/Typography';
 import { Divider } from '@/components/ui/Divider';
+import { BikeIndexBike } from '@/types';
 import { colors, spacing, borderRadius } from '@/constants/theme';
 
 interface BikeSpecsCardProps {
-  brand: string;
+  bike?: BikeIndexBike;
+  isLoading: boolean;
 }
 
 interface SpecRowProps {
   label: string;
   value: string;
+}
+
+function prettifySlug(slug: string) {
+  return slug
+    .split('-')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
 }
 
 function SpecRow({ label, value }: SpecRowProps) {
@@ -28,9 +36,7 @@ function SpecRow({ label, value }: SpecRowProps) {
   );
 }
 
-export function BikeSpecsCard({ brand }: BikeSpecsCardProps) {
-  const { spec, loading, error } = useBikeSpecs(brand);
-
+export function BikeSpecsCard({ bike, isLoading }: BikeSpecsCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.titleRow}>
@@ -44,27 +50,27 @@ export function BikeSpecsCard({ brand }: BikeSpecsCardProps) {
 
       <Divider style={styles.divider} />
 
-      {loading && <LottieLoader size={40} />}
+      {isLoading && <LottieLoader size={40} />}
 
-      {error && (
+      {!isLoading && !bike && (
         <Typography variant="caption" color={colors.textSecondary}>
-          Could not load live data.
+          No data found.
         </Typography>
       )}
 
-      {!loading && !error && spec && (
+      {!isLoading && bike && (
         <View style={styles.specs}>
-          <SpecRow label="Frame material" value={spec.frameMaterial} />
-          <SpecRow label="Drivetrain" value={spec.drivetrainType} />
-          <SpecRow label="Wheel size" value={spec.wheelSize} />
-          <SpecRow label="Year" value={String(spec.year)} />
+          <SpecRow label="Manufacturer" value={bike.manufacturer_name} />
+          <SpecRow label="Model" value={bike.frame_model} />
+          <SpecRow label="Colors" value={bike.frame_colors.join(' / ')} />
+          <SpecRow label="Year" value={bike.year ? String(bike.year) : 'Unknown'} />
+          <SpecRow label="Drive type" value={prettifySlug(bike.propulsion_type_slug)} />
+          <SpecRow label="Serial" value={bike.serial} />
+          <SpecRow label="Status" value={prettifySlug(bike.status)} />
+          {bike.stolen_location && (
+            <SpecRow label="Last seen" value={bike.stolen_location} />
+          )}
         </View>
-      )}
-
-      {!loading && !error && !spec && (
-        <Typography variant="caption" color={colors.textSecondary}>
-          No data found for this brand.
-        </Typography>
       )}
     </View>
   );

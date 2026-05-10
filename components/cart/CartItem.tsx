@@ -42,10 +42,14 @@ export function CartItem({ item, onIncrement, onDecrement }: CartItemProps) {
 
       <View style={styles.controls}>
         <TouchableOpacity onPress={onDecrement} style={styles.subtractBtn} activeOpacity={0.7}>
-          <Text style={styles.qtySymbol}>−</Text>
+          <Text style={styles.qtySymbol} allowFontScaling={false}>
+            −
+          </Text>
         </TouchableOpacity>
 
-        <Text style={styles.qty}>{quantity}</Text>
+        <Text style={styles.qty} allowFontScaling={false}>
+          {quantity}
+        </Text>
 
         <TouchableOpacity onPress={onIncrement} style={styles.addBtn} activeOpacity={0.7}>
           <LinearGradient
@@ -55,7 +59,9 @@ export function CartItem({ item, onIncrement, onDecrement }: CartItemProps) {
             end={{ x: 0.742, y: 0.938 }}
             style={StyleSheet.absoluteFill}
           />
-          <Text style={styles.qtySymbol}>+</Text>
+          <Text style={styles.qtySymbol} allowFontScaling={false}>
+            +
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -102,16 +108,16 @@ const styles = StyleSheet.create({
     paddingBottom: 2,
   },
   subtractBtn: {
-    width: 48,
-    height: 48,
+    width: 24,
+    height: 24,
     borderRadius: 5,
     backgroundColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   addBtn: {
-    width: 48,
-    height: 48,
+    width: 24,
+    height: 24,
     borderRadius: 5,
     overflow: 'hidden',
     alignItems: 'center',
@@ -119,7 +125,8 @@ const styles = StyleSheet.create({
   },
   qtySymbol: {
     color: colors.textPrimary,
-    fontSize: 35,
+    fontSize: 20,
+    fontWeight: '300',
   },
   qty: {
     width: 24,

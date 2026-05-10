@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Image,
@@ -15,6 +15,7 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { PRODUCTS } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { BikeSpecsCard } from '@/components/product/BikeSpecsCard';
+import { BikeIndexBike } from '@/types';
 import { Typography } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { PressableScale } from '@/components/ui/PressableScale';
@@ -23,6 +24,7 @@ import { colors, spacing, borderRadius, gradientButtonShadow } from '@/constants
 import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
 import SvgProduct from '@/assets/svg/svg-product.svg';
 import SvgProductBottom from '@/assets/svg/svg-product-bottom.svg';
+import useBikeDescription from '@/components/hooks/useBikeDescription';
 type Tab = 'description' | 'specification';
 
 export default function ProductDetailScreen() {
@@ -60,6 +62,14 @@ export default function ProductDetailScreen() {
     );
   }
 
+  const searchName = `${product.brand} ${product.model}`;
+
+  const { data, isLoading } = useBikeDescription(searchName);
+
+  const apiBike = data?.bikes?.[(Math.random() * 5).toFixed(0)]; // arbitrarily pick one of 5 bikes (just as an API demo)
+  console.log(apiBike);
+
+  const apiDescription = apiBike?.description || product.description;
   const svgBgH = width * (641 / 382);
   const imageH = Math.round(width * 0.6);
   const bottomH = 104 + insets.bottom;
@@ -130,6 +140,7 @@ export default function ProductDetailScreen() {
             {(['description', 'specification'] as Tab[]).map((tab) => {
               const isActive = activeTab === tab;
               const label = tab === 'description' ? 'Description' : 'Specification';
+
               return (
                 <TouchableOpacity
                   key={tab}
@@ -158,12 +169,13 @@ export default function ProductDetailScreen() {
                 <Typography variant="body" weight="bold" color={colors.textPrimary}>
                   {product.brand} — {product.model}
                 </Typography>
+
                 <Typography variant="body" color={colors.textSecondary} style={styles.descText}>
-                  {product.description}
+                  {isLoading ? 'Loading bike details...' : apiDescription}
                 </Typography>
               </View>
             ) : (
-              <BikeSpecsCard brand={product.brand} />
+              <BikeSpecsCard bike={apiBike as BikeIndexBike | undefined} isLoading={isLoading} />
             )}
           </View>
         </LinearGradient>
@@ -180,9 +192,9 @@ export default function ProductDetailScreen() {
             size="md"
             disabled={!product.inStock}
             onPress={() => {
-                addToCart(product);
-                Alert.alert('Added to Cart', `${product.name} has been added to your cart.`);
-              }}
+              addToCart(product);
+              Alert.alert('Added to Cart', `${product.name} has been added to your cart.`);
+            }}
             style={styles.addToCartBtn}
           />
         </View>
@@ -207,7 +219,6 @@ const styles = StyleSheet.create({
     height: 48,
     borderRadius: 12,
     backgroundColor: colors.gradientEnd,
-    borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.7)',
     ...gradientButtonShadow,
   },
@@ -292,7 +303,7 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     color: colors.tabTextStart,
-    fontFamily: 'Poppins_400',
+    fontFamily: 'Poppins_400Regular',
     fontSize: 15,
   },
   tabLabelActive: {

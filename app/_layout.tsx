@@ -13,8 +13,11 @@ import {
   Poppins_600SemiBold,
   Poppins_700Bold,
 } from '@expo-google-fonts/poppins';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { CartProvider } from '@/context/CartContext';
 import { colors } from '@/constants/theme';
+
+const queryClient = new QueryClient();
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,6 +42,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.background }}>
       <SafeAreaProvider>
+        <QueryClientProvider client={queryClient}>
         <CartProvider>
           <StatusBar style="light" backgroundColor={colors.background} />
           <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }}>
@@ -49,6 +53,7 @@ export default function RootLayout() {
             />
           </Stack>
         </CartProvider>
+        </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

@@ -19,15 +19,22 @@ export interface CartItem {
   quantity: number;
 }
 
-export interface BikeSpec {
-  frameType: string;
-  frameMaterial: string;
-  drivetrainType: string;
-  wheelSize: string;
-  year: number;
-  componentGroup: string;
-  verifiedStatus: boolean;
-  source: 'bikeindex';
+export interface BikeIndexBike {
+  id: number;
+  title: string;
+  manufacturer_name: string;
+  frame_model: string;
+  frame_colors: string[];
+  year: number | null;
+  serial: string;
+  status: string;
+  stolen: boolean;
+  stolen_location: string | null;
+  propulsion_type_slug: string;
+  description: string;
+  large_img: string | null;
+  thumb: string | null;
+  url: string;
 }
 
 export interface OrderSummary {

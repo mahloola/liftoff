@@ -1,9 +1,17 @@
-import React, { useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, Animated, PanResponder } from 'react-native';
-import { colors, borderRadius } from '@/constants/theme';
-import { PressableScale } from './PressableScale';
-import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
+import React, { useCallback } from 'react';
+import { View, StyleSheet } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  interpolateColor,
+  withSpring,
+  runOnJS,
+} from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { LinearGradient } from 'expo-linear-gradient';
+import { colors, borderRadius } from '@/constants/theme';
+import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
+
 const TRACK_WIDTH = 174;
 const THUMB_WIDTH = 44;
 const SNAP_THRESHOLD = TRACK_WIDTH * 0.75;
@@ -14,68 +22,63 @@ interface SlideToCheckoutProps {
 }
 
 export default function SlideToCheckout({ onSuccess }: SlideToCheckoutProps) {
-  const translateX = useRef(new Animated.Value(0)).current;
-  const completed = useRef(false);
-  const labelOpacity = translateX.interpolate({
-    inputRange: [0, MAX_TRANSLATE * 0.5],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-  const doneOpacity = useRef(new Animated.Value(0)).current;
+  const thumbX = useSharedValue(0);
+  const isCompleted = useSharedValue(false);
 
-  const snapForward = useCallback(() => {
-    completed.current = true;
-    Animated.parallel([
-      Animated.spring(translateX, { toValue: MAX_TRANSLATE, useNativeDriver: true }),
-      Animated.timing(doneOpacity, { toValue: 1, duration: 300, useNativeDriver: true }),
-    ]).start(() => onSuccess?.());
-  }, [translateX, doneOpacity, onSuccess]);
+  const handleSuccess = useCallback(() => onSuccess?.(), [onSuccess]);
 
-  const snapBack = useCallback(() => {
-    Animated.spring(translateX, { toValue: 0, useNativeDriver: true }).start();
-  }, [translateX]);
-
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => !completed.current,
-      onMoveShouldSetPanResponder: () => !completed.current,
-      onPanResponderMove: (_, gestureState) => {
-        if (completed.current) return;
-        const clamped = Math.max(0, Math.min(gestureState.dx, MAX_TRANSLATE));
-        translateX.setValue(clamped);
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        if (completed.current) return;
-        if (gestureState.dx > SNAP_THRESHOLD) {
-          snapForward();
-        } else {
-          snapBack();
-        }
-      },
-      onPanResponderTerminate: () => {
-        if (!completed.current) snapBack();
-      },
+  const panGesture = Gesture.Pan()
+    .activeOffsetX([0, 5])
+    .onUpdate((e) => {
+      if (isCompleted.value) return;
+      thumbX.value = Math.max(0, Math.min(e.translationX, MAX_TRANSLATE));
     })
-  ).current;
+    .onEnd(() => {
+      if (isCompleted.value) return;
+      if (thumbX.value > SNAP_THRESHOLD) {
+        isCompleted.value = true;
+        thumbX.value = withSpring(MAX_TRANSLATE, { damping: 15, stiffness: 150 });
+        if (onSuccess) runOnJS(handleSuccess)();
+      } else {
+        thumbX.value = withSpring(0, { damping: 15, stiffness: 200 });
+      }
+    });
+
+  const thumbStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: thumbX.value }],
+  }));
+
+  const checkoutStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      thumbX.value,
+      [MAX_TRANSLATE - THUMB_WIDTH * 1.5, MAX_TRANSLATE],
+      ['rgba(255,255,255,0.55)', 'rgba(255,255,255,0)']
+    ),
+  }));
+
+  const doneStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(
+      thumbX.value,
+      [0, THUMB_WIDTH * 1.5],
+      ['rgba(255,255,255,0)', 'rgba(255,255,255,0.55)']
+    ),
+  }));
 
   return (
     <View style={styles.track}>
-      <Animated.Text style={[styles.label, { opacity: labelOpacity }]}>Checkout</Animated.Text>
-      <Animated.Text style={[styles.label, styles.doneLabel, { opacity: doneOpacity }]}>
-        Done!
-      </Animated.Text>
-      <Animated.View
-        style={[styles.thumb, { transform: [{ translateX }] }]}
-        {...panResponder.panHandlers}
-      >
-        <LinearGradient
-          colors={[colors.gradientStart, colors.gradientEnd]}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
-        />
-        <ChevronLeft width={20} height={20} style={{ transform: [{ rotate: '180deg' }] }} />
-      </Animated.View>
+      <Animated.Text style={[styles.doneLabel, doneStyle]}>Done!</Animated.Text>
+      <Animated.Text style={[styles.checkoutLabel, checkoutStyle]}>Checkout</Animated.Text>
+      <GestureDetector gesture={panGesture}>
+        <Animated.View style={[styles.thumb, thumbStyle]}>
+          <LinearGradient
+            colors={[colors.gradientStart, colors.gradientEnd]}
+            start={{ x: 0, y: 1 }}
+            end={{ x: 1, y: 0 }}
+            style={[StyleSheet.absoluteFill, { borderRadius: 10 }]}
+          />
+          <ChevronLeft width={20} height={20} style={{ transform: [{ rotate: '180deg' }] }} />
+        </Animated.View>
+      </GestureDetector>
     </View>
   );
 }
@@ -97,26 +100,21 @@ const styles = StyleSheet.create({
     width: THUMB_WIDTH,
     height: 60,
     borderRadius: borderRadius.pill,
-    backgroundColor: colors.gradientEnd,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  thumbIcon: {
-    color: 'white',
-    fontSize: 28,
-    fontFamily: 'Poppins_700Bold',
-  },
-  label: {
+  checkoutLabel: {
     position: 'absolute',
-    width: '100%',
-    textAlign: 'center',
-    color: 'rgba(255, 255, 255, 0.6)',
+    right: 28,
+    textAlign: 'right',
     fontSize: 18,
-    fontFamily: 'Poppins_600SemiBold',
-    paddingLeft: THUMB_WIDTH,
+    fontFamily: 'Poppins_400Regular',
   },
   doneLabel: {
-    color: colors.gradientStart,
-    paddingLeft: 0,
+    position: 'absolute',
+    left: 28,
+    textAlign: 'left',
+    fontSize: 18,
+    fontFamily: 'Poppins_400Regular',
   },
 });

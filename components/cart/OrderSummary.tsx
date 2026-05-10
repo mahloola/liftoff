@@ -32,7 +32,7 @@ function SummaryRow({ label, value, highlight = false, totalColor = false }: Sum
         variant={highlight ? 'body' : 'caption'}
         weight={highlight ? 'semibold' : 'regular'}
         color={highlight ? colors.textPrimary : colors.textSecondary}
-        style={{ fontSize: 19 }}
+        style={{ fontSize: 18, color: 'rgba(255, 255, 255, 0.9)' }}
       >
         {label}
       </Typography>
@@ -40,7 +40,7 @@ function SummaryRow({ label, value, highlight = false, totalColor = false }: Sum
         variant={highlight ? 'price' : 'caption'}
         weight={totalColor ? 'bold' : highlight ? 'bold' : 'regular'}
         color={valueColor}
-        style={{ fontSize: 19 }}
+        style={{ fontSize: 18 }}
       >
         {value}
       </Typography>
@@ -70,7 +70,7 @@ export function OrderSummary({ subtotal }: OrderSummaryProps) {
         <TextInput
           value={couponCode}
           onChangeText={setCouponCode}
-          placeholder="Enter your coupon code"
+          placeholder="Bike30"
           style={styles.couponInput}
         />
         <Button
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.lg,
     padding: spacing.lg,
     gap: spacing.sm,
-    width: '90%',
+    width: '100%',
   },
   row: {
     flexDirection: 'row',
@@ -111,10 +111,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.xs,
     color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 17,
   },
   coupon: {
     margin: spacing.md,
-    width: '90%',
+    width: '92%',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
