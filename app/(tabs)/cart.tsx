@@ -14,6 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import ChevronLeft from '@/assets/svg/misc/chevron-left.svg';
 
 import { useLocalSearchParams, router } from 'expo-router';
+import { AnimatedScreen } from '@/components/ui/AnimatedScreen';
 
 export default function CartScreen() {
   const { items, increment, decrement, removeFromCart, subtotal } = useCart();
@@ -22,6 +23,7 @@ export default function CartScreen() {
   const isEmpty = items.length === 0;
   const insets = useSafeAreaInsets();
   return (
+    <AnimatedScreen>
     <SafeAreaView style={styles.container} edges={['top']}>
       <PressableScale
         onPress={() => router.back()}
@@ -79,6 +81,7 @@ export default function CartScreen() {
 
       <CheckoutPanel visible={checkoutOpen} onClose={() => setCheckoutOpen(false)} />
     </SafeAreaView>
+    </AnimatedScreen>
   );
 }
 

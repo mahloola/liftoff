@@ -10,6 +10,7 @@ import { ProductCard } from '@/components/home/ProductCard';
 import { Typography } from '@/components/ui/Typography';
 import { PressableScale } from '@/components/ui/PressableScale';
 import { colors, spacing, gradientButtonShadow, borderRadius } from '@/constants/theme';
+import { AnimatedScreen } from '@/components/ui/AnimatedScreen';
 
 import SvgIndex from '@/assets/svg/svg-index.svg';
 import SearchIcon from '@/assets/svg/misc/Search.svg';
@@ -54,6 +55,7 @@ export default function HomeScreen() {
   const svgH = width * (695 / 390);
 
   return (
+    <AnimatedScreen>
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Background polygon SVG — lowest layer */}
       <View style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -108,6 +110,7 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
     </SafeAreaView>
+    </AnimatedScreen>
   );
 }
 
