@@ -39,7 +39,7 @@ export function Button({
       <PressableScale
         onPress={onPress}
         disabled={isDisabled}
-        scaleTo={0.94}
+        scaleTo={0.88}
         style={[
           { height: h, borderRadius: borderRadius.md, backgroundColor: colors.gradientEnd },
           fullWidth && styles.fullWidth,

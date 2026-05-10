@@ -5,10 +5,16 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Pressable,
   useWindowDimensions,
   Alert,
 } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  interpolateColor,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, router } from 'expo-router';
@@ -32,6 +38,28 @@ export default function ProductDetailScreen() {
   const insets = useSafeAreaInsets();
   const { addToCart } = useCart();
   const [activeTab, setActiveTab] = useState<Tab>('description');
+  const tabProgress = useSharedValue(0);
+
+  const handleTabPress = useCallback(
+    (tab: Tab) => {
+      setActiveTab(tab);
+      tabProgress.value = withTiming(tab === 'specification' ? 1 : 0, { duration: 500 });
+    },
+    [tabProgress]
+  );
+
+  const descBtnStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(tabProgress.value, [0, 1], ['#28303F', '#323B4F']),
+  }));
+  const specBtnStyle = useAnimatedStyle(() => ({
+    backgroundColor: interpolateColor(tabProgress.value, [0, 1], ['#323B4F', '#28303F']),
+  }));
+  const descLabelStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(tabProgress.value, [0, 1], [colors.tabTextStart, colors.textSecondary]),
+  }));
+  const specLabelStyle = useAnimatedStyle(() => ({
+    color: interpolateColor(tabProgress.value, [0, 1], [colors.textSecondary, colors.tabTextStart]),
+  }));
 
   const product = PRODUCTS.find((p) => p.id === id);
 
@@ -136,29 +164,34 @@ export default function ProductDetailScreen() {
         >
           {/* Tab row */}
           <View style={styles.tabRow}>
-            {(['description', 'specification'] as Tab[]).map((tab) => {
-              const isActive = activeTab === tab;
-              const label = tab === 'description' ? 'Description' : 'Specification';
-
-              return (
-                <TouchableOpacity
-                  key={tab}
-                  onPress={() => setActiveTab(tab)}
-                  style={isActive ? styles.activeTabBtn : styles.tabBtn}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    style={[
-                      styles.tabLabel,
-                      { color: isActive ? colors.tabTextStart : colors.textSecondary },
-                      isActive && styles.tabLabelActive,
-                    ]}
-                  >
-                    {label}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+            <Pressable onPress={() => handleTabPress('description')} style={styles.tabBtnBase}>
+              <Animated.View
+                style={[StyleSheet.absoluteFill, { borderRadius: 10 }, descBtnStyle]}
+              />
+              <Animated.Text
+                style={[
+                  styles.tabLabel,
+                  descLabelStyle,
+                  activeTab === 'description' && styles.tabLabelActive,
+                ]}
+              >
+                Description
+              </Animated.Text>
+            </Pressable>
+            <Pressable onPress={() => handleTabPress('specification')} style={styles.tabBtnBase}>
+              <Animated.View
+                style={[StyleSheet.absoluteFill, { borderRadius: 10 }, specBtnStyle]}
+              />
+              <Animated.Text
+                style={[
+                  styles.tabLabel,
+                  specLabelStyle,
+                  activeTab === 'specification' && styles.tabLabelActive,
+                ]}
+              >
+                Specification
+              </Animated.Text>
+            </Pressable>
           </View>
 
           {/* Tab content */}
@@ -278,27 +311,16 @@ const styles = StyleSheet.create({
   tabRow: {
     flexDirection: 'row',
   },
-  tabBtn: {
+  tabBtnBase: {
     marginTop: 30,
     marginHorizontal: 30,
     borderRadius: 10,
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: spacing.md,
     gap: 2,
-    backgroundColor: '#323B4F',
     boxShadow: '4px 4px 10px 0px #252B39, -4px -4px 10px 0px #38445A',
-  },
-  activeTabBtn: {
-    marginTop: 30,
-    marginHorizontal: 30,
-    borderRadius: 10,
-    flex: 1,
-    alignItems: 'center',
-    paddingVertical: spacing.md,
-    gap: 2,
-    backgroundColor: '#28303F',
-    boxShadow: '4px 4px 8px 0px #202633 inset, -4px -4px 8px 0px #364055 inset',
   },
   tabLabel: {
     color: colors.tabTextStart,
