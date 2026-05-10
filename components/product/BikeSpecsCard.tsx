@@ -66,10 +66,6 @@ export function BikeSpecsCard({ bike, isLoading }: BikeSpecsCardProps) {
           <SpecRow label="Year" value={bike.year ? String(bike.year) : 'Unknown'} />
           <SpecRow label="Drive type" value={prettifySlug(bike.propulsion_type_slug)} />
           <SpecRow label="Serial" value={bike.serial} />
-          <SpecRow label="Status" value={prettifySlug(bike.status)} />
-          {bike.stolen_location && (
-            <SpecRow label="Last seen" value={bike.stolen_location} />
-          )}
         </View>
       )}
     </View>

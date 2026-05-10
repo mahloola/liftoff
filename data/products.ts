@@ -34,7 +34,7 @@ export const PRODUCTS: Product[] = [
     price: 120,
     image: require('@/assets/png/SMITH - Trade.png'),
     category: 'helmet',
-    description: 'Versatile trail bike built for technical terrain and all-day comfort.',
+    description: 'Versatile trail helmet built for technical terrain and all-day comfort.',
     inStock: true,
   },
   {
@@ -45,7 +45,7 @@ export const PRODUCTS: Product[] = [
     price: 120,
     image: require('@/assets/png/SMITH - Trade.png'),
     category: 'helmet',
-    description: 'Versatile trail bike built for technical terrain and all-day comfort.',
+    description: 'Versatile trail helmet built for technical terrain and all-day comfort.',
     inStock: true,
   },
   {

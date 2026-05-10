@@ -15,7 +15,6 @@ import { useLocalSearchParams, router } from 'expo-router';
 import { PRODUCTS } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { BikeSpecsCard } from '@/components/product/BikeSpecsCard';
-import { BikeIndexBike } from '@/types';
 import { Typography } from '@/components/ui/Typography';
 import { Button } from '@/components/ui/Button';
 import { PressableScale } from '@/components/ui/PressableScale';
@@ -171,11 +170,11 @@ export default function ProductDetailScreen() {
                 </Typography>
 
                 <Typography variant="body" color={colors.textSecondary} style={styles.descText}>
-                  {isLoading ? 'Loading bike details...' : apiDescription}
+                  {isLoading ? 'Loading bike details...' : product.description}
                 </Typography>
               </View>
             ) : (
-              <BikeSpecsCard bike={apiBike as BikeIndexBike | undefined} isLoading={isLoading} />
+              <BikeSpecsCard bike={apiBike} isLoading={isLoading} />
             )}
           </View>
         </LinearGradient>
