@@ -2,6 +2,10 @@
 
 A pixel-perfect Expo React Native bike shop app.
 
+## Demo
+
+https://www.youtube.com/watch?v=FFp0yYqs2ww
+
 ## Tech Stack
 
 - Expo React Native
